@@ -1,0 +1,9 @@
+export './author/author.dart';
+export './edge/edge.dart';
+export './edge_parent/edge_parent.dart';
+export './graphql_data/graphql_data.dart';
+export './graphql_error/graphql_error.dart';
+export './i_github_api_repository.dart';
+export './issue/issue.dart';
+export './issues/issues.dart';
+export './node/node.dart';

@@ -9,11 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutterissuesapp/injections.dart';
-import 'package:flutterissuesapp/issues/bloc/issues_bloc.dart';
-import 'package:flutterissuesapp/issues/views/issues_page.dart';
+import 'package:flutterissuesapp/issues/bloc/bloc.dart';
 import 'package:flutterissuesapp/l10n/l10n.dart';
+import 'package:flutterissuesapp/router/router.dart';
 import 'package:flutterissuesapp/theme/cubit/theme_cubit.dart';
-import 'package:hive_repository/hive_repository.dart';
+import 'package:routemaster/routemaster.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -22,10 +22,21 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     // Ensure hive is instanciate first
     return MultiBlocProvider(providers: [
-      BlocProvider(create: (_) => ThemeCubit()),
       BlocProvider(
-          create: (_) =>
-              getIt<IssuesBloc>()..add(const IssuesEvent.watchIssuesAsked())),
+        create: (_) => getIt<ThemeCubit>()..setModeFromCache(),
+      ),
+      BlocProvider(
+        create: (_) => getIt<IssuesBloc>()
+          ..add(
+            const IssuesEvent.fetchIssuesAsked(),
+          ),
+      ),
+      BlocProvider(
+        create: (_) => getIt<FilterFormBloc>(),
+      ),
+      BlocProvider(
+        create: (_) => getIt<DetailsBloc>(),
+      ),
     ], child: const AppView());
   }
 }
@@ -35,14 +46,16 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       theme: context.select((ThemeCubit theme) => theme.state),
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const IssuesPage(),
+      routerDelegate:
+          RoutemasterDelegate(routesBuilder: (context) => IssuesRouter.routes),
+      routeInformationParser: const RoutemasterParser(),
     );
   }
 }

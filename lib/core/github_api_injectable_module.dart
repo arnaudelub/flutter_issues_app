@@ -13,6 +13,9 @@ abstract class GithubApiInjectableModule {
   IGithubApiRepository get githubApiRepository => GithubApiRepository(client);
 
   @lazySingleton
+  IFilterRepository get filterRepository => FilterRepository();
+
+  @lazySingleton
   HttpLink get httpLink => HttpLink(
         'https://api.github.com/graphql',
       );

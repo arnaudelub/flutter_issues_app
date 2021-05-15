@@ -1,4 +1,4 @@
-export './src/domain/i_github_api_repository.dart';
-export './src/domain/issue.dart';
-export './src/infrastructure/github_api_repository.dart';
-export './src/infrastructure/issue_dto.dart';
+export './src/core/converters.dart';
+export './src/domain/domain.dart';
+export './src/filter/filter.dart';
+export './src/infrastructure/infrastructure.dart';

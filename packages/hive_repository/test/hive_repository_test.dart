@@ -5,23 +5,23 @@ import 'package:mocktail/mocktail.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_repository/hive_repository.dart';
 
-class MockSettingsBox extends Mock implements SettingsBox {}
+class MockSettingsBox<T> extends Mock implements Box<bool> {}
 
-class MockIssuesBox extends Mock implements IssuesBox {}
+class MockIssuesBox<T> extends Mock implements Box<FlutterIssue> {}
 
 class MockHiveBox<T> extends Mock implements LazyBox<T> {}
 
 void main() {
-  late MockSettingsBox mockSettingsBox;
-  late MockIssuesBox mockIssuesBox;
+  late MockSettingsBox<bool> mockSettingsBox;
+  late MockIssuesBox<FlutterIssue> mockIssuesBox;
   late FlutterIssueAdapter flutterIssue;
   late IHiveRepository hiveRepository;
   late MockHiveBox<bool> mockHiveBox;
 
   setUpAll(() {
     flutterIssue = FlutterIssueAdapter();
-    mockIssuesBox = MockIssuesBox();
-    mockSettingsBox = MockSettingsBox();
+    mockIssuesBox = MockIssuesBox<FlutterIssue>();
+    mockSettingsBox = MockSettingsBox<bool>();
     hiveRepository =
         HiveRepository(settingsBox: mockSettingsBox, issuesBox: mockIssuesBox);
   });
@@ -55,7 +55,7 @@ void main() {
       mockHiveBox = MockHiveBox<bool>();
 
       //when(() => putAction).thenAnswer((_) async {});
-      when(() => mockSettingsBox.box).thenReturn(mockHiveBox);
+      //when(() => mockSettingsBox.box).thenReturn(mockHiveBox);
       await hiveRepository.switchSettingThemeMode(isDarkMode: true);
       verify(() => mockHiveBox.put(themeModeKey, true));
       //verify(() async => putAction).called(1);

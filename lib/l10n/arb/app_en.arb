@@ -1,7 +1,21 @@
 {
     "@@locale": "en",
-    "counterAppBarTitle": "Counter",
-    "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
+    "issueAppBarTitle": "Flutter Issues",
+    "@issueAppBarTitle": {
+        "description": "Text shown in the AppBar of the Issues Page"
+    },
+    "genericError": "Oops! Something went wrong",
+    "@genericError": {
+        "description": "Text shown when there is a failure"
+    },
+    "filterInputLabel": "Filter",
+    "@filterInputLabel": {
+        "description": "Text shown in filter input as label"
+    },
+    "filterInputHint": "states:open || states:closed",
+    "@filterInputHint": {
+        "description": "Text shown in filter input as hint"
     }
+
+
 }

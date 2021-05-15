@@ -19,12 +19,8 @@ class HiveRepository implements IHiveRepository {
   @override
   Future<void> switchSettingThemeMode({required bool isDarkMode}) async {
     try {
-      print('Foo');
-      print("${settingsBox.isOpen}");
-      await settingsBox.put('$themeModeKey', isDarkMode);
-      print('okkk');
+      await settingsBox.put(themeModeKey, isDarkMode);
     } catch (e) {
-      print("Error is $e");
       throw UnimplementedError();
     }
   }
@@ -33,12 +29,17 @@ class HiveRepository implements IHiveRepository {
   void removeIssue() {
     // TODO: implement removeIssue
   }
+
+  @override
+  bool getIsDarkModeCache() {
+    return settingsBox.get(themeModeKey, defaultValue: false);
+  }
 }
 
-class SettingsBox {
+class SettingsBox<bool> {
   final LazyBox<bool> box = Hive.lazyBox(settingsBoxName);
 }
 
-class IssuesBox {
+class IssuesBox<FlutterIssue> {
   final LazyBox<FlutterIssue> box = Hive.lazyBox(issuesBoxName);
 }

@@ -11,6 +11,9 @@ abstract class HiveInjectableModule {
     await Hive.initFlutter();
     final settingsBox = await Hive.openBox(settingsBoxName);
     final issuesBox = await Hive.openBox(issuesBoxName);
-    return HiveRepository(settingsBox: settingsBox, issuesBox: issuesBox);
+    return HiveRepository(
+      settingsBox: settingsBox,
+      issuesBox: issuesBox,
+    );
   }
 }
