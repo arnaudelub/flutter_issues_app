@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_repository/hive_repository.dart';
 
@@ -11,9 +12,35 @@ class HiveRepository implements IHiveRepository {
   final Box settingsBox;
   final Box issuesBox;
 
+  bool _isUpdated(String? storedUpdatedAt, String? actualUpdatedAt) =>
+      storedUpdatedAt != actualUpdatedAt;
+
   @override
-  void addIssue() {
-    // TODO: implement addIssue
+  bool isCachedAndUpdate(String id, String? updatedAt) {
+    final cache = issuesBox.get(id) as Map<dynamic, dynamic>?;
+
+    if (cache != null) {
+      if (_isUpdated(cache['updatedAt']!, updatedAt)) {
+        removeIssue(id);
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  bool isCached(String id) => issuesBox.get(id) != null;
+
+  @override
+  Future<void> addIssue({required String id, String? updatedAt}) async {
+    try {
+      if (!isCached(id)) {
+        await issuesBox.put(id, {'updatedAt': updatedAt});
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -26,8 +53,10 @@ class HiveRepository implements IHiveRepository {
   }
 
   @override
-  void removeIssue() {
-    // TODO: implement removeIssue
+  Future<void> removeIssue(String id) async {
+    if (isCached(id)) {
+      await issuesBox.delete(id);
+    }
   }
 
   @override

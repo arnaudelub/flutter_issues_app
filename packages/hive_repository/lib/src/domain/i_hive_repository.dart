@@ -1,6 +1,10 @@
+import 'package:hive_repository/hive_repository.dart';
+
 abstract class IHiveRepository {
-  void addIssue();
+  Future<void> addIssue({required String id, String? updatedAt});
+  bool isCached(String id);
+  bool isCachedAndUpdate(String id, String? updatedAt);
   Future<void> switchSettingThemeMode({required bool isDarkMode});
   bool getIsDarkModeCache();
-  void removeIssue();
+  Future<void> removeIssue(String id);
 }

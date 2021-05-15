@@ -6,6 +6,7 @@ part 'issues.freezed.dart';
 @freezed
 class Issues with _$Issues {
   const factory Issues({
+    required int totalCount,
     required List<Edge?> edges,
   }) = _Issues;
 }

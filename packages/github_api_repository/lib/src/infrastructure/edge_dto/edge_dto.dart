@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:github_api_repository/src/core/converters.dart'
     show NodeConverter;
-import 'package:github_api_repository/src/domain/domain.dart' show Edge, Node;
+import 'package:github_api_repository/src/domain/domain.dart';
 
 part 'edge_dto.freezed.dart';
 part 'edge_dto.g.dart';

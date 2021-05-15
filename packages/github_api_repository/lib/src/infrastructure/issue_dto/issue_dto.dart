@@ -1,8 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:github_api_repository/src/core/converters.dart'
     show AuthorJsonConverter, CommentsConverter, LabelsConverter;
-import 'package:github_api_repository/src/domain/domain.dart'
-    show Author, EdgeParent, Issue;
+import 'package:github_api_repository/src/domain/domain.dart';
 
 part 'issue_dto.freezed.dart';
 part 'issue_dto.g.dart';
@@ -16,6 +15,7 @@ class IssueDto with _$IssueDto {
     @AuthorJsonConverter() Author? author,
     required String title,
     required String state,
+    required String? bodyText,
     @JsonKey(includeIfNull: false)
     @CommentsConverter()
         required EdgeParent? comments,
@@ -36,6 +36,7 @@ class IssueDto with _$IssueDto {
         author: issue.author,
         title: issue.title,
         state: issue.state,
+        bodyText: issue.bodyText,
         number: issue.number ?? 0,
         createdAt: issue.createdAt,
         updatedAt: issue.updatedAt,
@@ -49,6 +50,7 @@ class IssueDto with _$IssueDto {
         number: number ?? 0,
         title: title,
         state: state,
+        bodyText: bodyText,
         createdAt: createdAt,
         updatedAt: updatedAt,
         closedAt: closedAt ?? '',

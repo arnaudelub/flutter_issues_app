@@ -1,8 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:github_api_repository/src/core/converters.dart'
     show ErrorJsonConverter, IssuesJsonConverter, NullableIssueJsonConverter;
-import 'package:github_api_repository/src/domain/domain.dart'
-    show GqlData, GqlError, Issue, Issues;
+import 'package:github_api_repository/src/domain/domain.dart';
 
 part 'graphql_data_dto.freezed.dart';
 part 'graphql_data_dto.g.dart';

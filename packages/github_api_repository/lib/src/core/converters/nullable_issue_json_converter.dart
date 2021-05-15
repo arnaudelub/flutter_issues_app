@@ -22,7 +22,6 @@ class NullableIssueJsonConverter implements JsonConverter<Issue?, Map?> {
 
   @override
   Issue? fromJson(Map? json) {
-    print("Nullable converter : $json");
     if (json == null) {
       return null;
     }

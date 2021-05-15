@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:github_api_repository/src/domain/domain.dart' show GqlError;
+import 'package:github_api_repository/src/domain/domain.dart';
 
 part 'graphql_error_dto.freezed.dart';
 part 'graphql_error_dto.g.dart';

@@ -16,5 +16,6 @@ class Node with _$Node {
     String? bodyText,
     String? title,
     String? state,
+    bool? isCached,
   }) = _Node;
 }

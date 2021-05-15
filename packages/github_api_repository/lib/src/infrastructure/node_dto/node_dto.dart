@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:github_api_repository/src/core/converters.dart'
     show AuthorJsonConverter;
-import 'package:github_api_repository/src/domain/domain.dart' show Author, Node;
+import 'package:github_api_repository/src/domain/domain.dart';
 
 part 'node_dto.freezed.dart';
 part 'node_dto.g.dart';
@@ -21,6 +21,7 @@ class NodeDto with _$NodeDto {
     String? bodyText,
     String? title,
     String? state,
+    @JsonKey(ignore: true) bool? isCached,
   }) = _NodeDto;
 
   factory NodeDto.fromJson(Map<String, dynamic> json) =>

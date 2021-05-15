@@ -5,12 +5,14 @@ import 'package:flutterissuesapp/injections.dart';
 import 'package:github_api_repository/github_api_repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_repository/hive_repository.dart';
 import 'package:injectable/injectable.dart';
 
 @module
 abstract class GithubApiInjectableModule {
   @lazySingleton
-  IGithubApiRepository get githubApiRepository => GithubApiRepository(client);
+  IGithubApiRepository get githubApiRepository =>
+      GithubApiRepository(client, getIt<IHiveRepository>());
 
   @lazySingleton
   IFilterRepository get filterRepository => FilterRepository();

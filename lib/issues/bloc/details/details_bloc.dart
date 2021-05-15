@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bloc/bloc.dart';
 import 'package:github_api_repository/github_api_repository.dart';
+import 'package:hive_repository/hive_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:injectable/injectable.dart';
 
@@ -14,8 +15,10 @@ part 'details_bloc.freezed.dart';
 
 @injectable
 class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
-  DetailsBloc(this._repository) : super(const DetailsState.initial());
+  DetailsBloc(this._repository, this._hiveRepository)
+      : super(const DetailsState.initial());
   final IGithubApiRepository _repository;
+  final IHiveRepository _hiveRepository;
 
   StreamSubscription<Issue>? _issueStreamSubscription;
   @override
@@ -38,6 +41,8 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
         yield const DetailsState.detailsFailure();
       }
     }, issueDetailsReceived: (IssueDetailsReceived data) async* {
+      await _hiveRepository.addIssue(
+          id: data.issue.id, updatedAt: data.issue.updatedAt);
       yield DetailsState.detailsReceived(data.issue);
     });
   }

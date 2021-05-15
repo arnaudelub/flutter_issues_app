@@ -85,17 +85,13 @@ class IssuesView extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: BlocProvider(
-                create: (_) => getIt<FetchMoreBloc>(),
-                child: InfiniteScrollWidget(
-                  issues: issues as List<Edge>,
-                ),
+              child: InfiniteScrollWidget(
+                issues: issues,
               ),
             ),
           ]),
         );
       } else {
-        print(state);
         return Center(child: Text(l10n.genericError));
       }
     });

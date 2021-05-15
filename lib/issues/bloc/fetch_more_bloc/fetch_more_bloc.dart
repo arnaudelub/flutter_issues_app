@@ -17,10 +17,10 @@ class FetchMoreBloc extends Bloc<FetchMoreEvent, FetchMoreState> {
     yield* event.map(fetchMore: (FetchMore data) async* {
       try {
         yield const LoadInProgress();
-        final startCursor = data.previousList.last!.cursor;
+        final startCursor = data.previousList.edges.last!.cursor;
         final moreIssues =
             await _repository.watchPaginatedIssues(after: startCursor);
-        yield LoadSuccess([...data.previousList, ...moreIssues]);
+        yield LoadSuccess([...data.previousList.edges, ...moreIssues.edges]);
       } on Exception catch (_) {
         yield const LoadFailure();
       }

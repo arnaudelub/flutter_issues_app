@@ -5,6 +5,7 @@ import 'package:github_api_repository/src/domain/domain.dart'
 import 'package:github_api_repository/src/infrastructure/infrastructure.dart'
     show GqlDataDto;
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hive_repository/hive_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 const openState = 'OPEN';
@@ -16,9 +17,10 @@ const availableFilterState = [
 ];
 
 class GithubApiRepository implements IGithubApiRepository {
-  GithubApiRepository(this.client);
+  GithubApiRepository(this.client, this._hiveRepository);
 
   final GraphQLClient client;
+  final IHiveRepository _hiveRepository;
 
   final BehaviorSubject<Issue> _repoSubject = BehaviorSubject<Issue>();
 
@@ -46,9 +48,17 @@ class GithubApiRepository implements IGithubApiRepository {
   Stream<Issue> get repoStream => _repoSubject.stream;
 
   @override
-  List<Edge?> getEdgesFromResponse(Map<String, dynamic> response) {
+  Issues getEdgesFromResponse(Map<String, dynamic> response) {
     final data = GqlDataDto.fromJson(response['repository']).toDomain();
-    return data.issues!.edges;
+    final List<Edge> edges = [];
+    for (final issue in data.issues!.edges) {
+      final edge = issue!.copyWith(
+          node: issue.node.copyWith(
+              isCached: _hiveRepository.isCachedAndUpdate(
+                  issue.node.id, issue.node.updatedAt)));
+      edges.add(edge);
+    }
+    return data.issues!.copyWith(edges: edges);
   }
 
   @override
@@ -61,7 +71,7 @@ class GithubApiRepository implements IGithubApiRepository {
   }
 
   @override
-  Future<List<Edge?>> watchPaginatedIssues({String? after}) async {
+  Future<Issues> watchPaginatedIssues({String? after}) async {
     final _option = QueryOptions(
       fetchPolicy: FetchPolicy.cacheAndNetwork,
       document: gql(_getPaginatedIssue(after)),
@@ -112,6 +122,7 @@ class GithubApiRepository implements IGithubApiRepository {
   }
 
   String _getPaginatedIssue(String? after) {
+    print("Received after: $after");
     var query = '''
 query readIssues(\$nIssues: Int!, \$states: [IssueState!]) {
   repository(name: \"flutter\", owner: \"flutter\") {
@@ -128,13 +139,16 @@ query readIssues(\$nIssues: Int!, \$states: [IssueState!]) {
           field: CREATED_AT
           direction: DESC
         }) {
+      totalCount
       edges {
         cursor
         node {
           id
           author {
             login
+            avatarUrl
           }
+          bodyText
           number
           title
           state
@@ -160,10 +174,12 @@ query issueDetails(\$nNumber: Int!){
       number
       title
       state
+      bodyText
       author {
         login
       }
       labels(last: 50, orderBy: {field: CREATED_AT, direction: DESC}) {
+        totalCount
         edges {
           cursor
           node {
@@ -175,12 +191,14 @@ query issueDetails(\$nNumber: Int!){
         }
       }
       comments(last: 50, orderBy: {field: UPDATED_AT, direction: DESC}) {
+        totalCount
         edges {
           cursor
           node {
             id
             author {
               login
+              avatarUrl
             }
             createdAt
             updatedAt

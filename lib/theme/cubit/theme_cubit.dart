@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 
 @injectable
 class ThemeCubit extends Cubit<ThemeData> {
-  ThemeCubit(this._hiveRepository) : super(ThemeData.light());
+  ThemeCubit(this._hiveRepository) : super(ThemeData.dark());
   final IHiveRepository _hiveRepository;
   void setModeFromCache() {
     emit(

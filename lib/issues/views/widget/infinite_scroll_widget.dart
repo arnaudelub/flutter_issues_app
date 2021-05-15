@@ -8,14 +8,14 @@ import 'issue_card.dart';
 
 class InfiniteScrollWidget extends StatefulWidget {
   InfiniteScrollWidget({Key? key, required this.issues}) : super(key: key);
-  final List<Edge?> issues;
+  final Issues issues;
   @override
   _InfiniteScrollWidgetState createState() => _InfiniteScrollWidgetState();
 }
 
 class _InfiniteScrollWidgetState extends State<InfiniteScrollWidget> {
   final ScrollController _scrollController = ScrollController();
-  late List<Edge?> issues;
+  late Issues issues;
   bool isFetching = false;
   @override
   void initState() {
@@ -33,15 +33,16 @@ class _InfiniteScrollWidgetState extends State<InfiniteScrollWidget> {
         setState(() => isFetching = true);
         context
             .read<FetchMoreBloc>()
-            .add(FetchMoreEvent.fetchMore(previousList: widget.issues));
+            .add(FetchMoreEvent.fetchMore(previousList: issues));
       }
     }
   }
 
   void onMoreReceived(List<Edge?> moreIssue) {
     if (moreIssue.isNotEmpty) {
+      final appendedEdges = [...issues.edges, ...moreIssue];
       setState(() {
-        issues = [...issues, ...moreIssue];
+        issues = issues.copyWith(edges: appendedEdges);
         isFetching = false;
       });
     }
@@ -56,6 +57,7 @@ class _InfiniteScrollWidgetState extends State<InfiniteScrollWidget> {
             content: LinearProgressIndicator(),
           ));
         } else if (state is LoadSuccess) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
           onMoreReceived(state.issues);
         } else if (state is LoadFailure) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -66,10 +68,11 @@ class _InfiniteScrollWidgetState extends State<InfiniteScrollWidget> {
       child: Container(
         child: ListView.builder(
             controller: _scrollController,
+            addSemanticIndexes: true,
             padding: const EdgeInsets.all(kDefaultPadding),
-            itemCount: issues.length,
+            itemCount: issues.edges.length,
             itemBuilder: (context, index) {
-              final issue = issues[index];
+              final issue = issues.edges[index];
               return IssueCard(issue: issue!);
             }),
       ),

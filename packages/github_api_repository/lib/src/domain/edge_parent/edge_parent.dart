@@ -6,6 +6,7 @@ part 'edge_parent.freezed.dart';
 @freezed
 class EdgeParent with _$EdgeParent {
   const factory EdgeParent({
+    required int totalCount,
     required List<Edge?> edges,
   }) = _EdgeParent;
 }

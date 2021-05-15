@@ -7,20 +7,17 @@ import 'package:hive_repository/hive_repository.dart';
 
 class MockSettingsBox<T> extends Mock implements Box<bool> {}
 
-class MockIssuesBox<T> extends Mock implements Box<FlutterIssue> {}
+class MockIssuesBox<T> extends Mock implements Box<Map<String, dynamic>> {}
 
 class MockHiveBox<T> extends Mock implements LazyBox<T> {}
 
 void main() {
   late MockSettingsBox<bool> mockSettingsBox;
-  late MockIssuesBox<FlutterIssue> mockIssuesBox;
-  late FlutterIssueAdapter flutterIssue;
+  late MockIssuesBox<Map<String, dynamic>> mockIssuesBox;
   late IHiveRepository hiveRepository;
   late MockHiveBox<bool> mockHiveBox;
 
   setUpAll(() {
-    flutterIssue = FlutterIssueAdapter();
-    mockIssuesBox = MockIssuesBox<FlutterIssue>();
     mockSettingsBox = MockSettingsBox<bool>();
     hiveRepository =
         HiveRepository(settingsBox: mockSettingsBox, issuesBox: mockIssuesBox);
