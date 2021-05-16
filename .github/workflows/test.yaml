@@ -69,4 +69,3 @@ jobs:
           arg-spec: 'tests.yaml:android-pixel-4'
         env:
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT_KEY }}
-        run: ls .github/workgflows
