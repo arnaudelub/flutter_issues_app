@@ -63,39 +63,60 @@ class IssuesView extends StatelessWidget {
                 currentFocus.unfocus();
               }
             },
-            child: Column(children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: kDefaultPadding,
-                    right: kDefaultPadding,
-                    top: kDefaultPadding),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: l10n.filterInputLabel,
-                    hintText: l10n.filterInputHint,
-                    prefixIcon: const Icon(Icons.search),
-                    enabledBorder: const OutlineInputBorder(),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: kDefaultPadding,
+                      right: kDefaultPadding,
+                      top: kDefaultPadding),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: l10n.filterInputLabel,
+                            hintText: l10n.filterInputHint,
+                            prefixIcon: const Icon(Icons.search),
+                            enabledBorder: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) => context
+                              .read<FilterFormBloc>()
+                              .add(FilterFormEvent.onFilterChanged(value)),
+                          onSaved: (_) => context
+                              .read<FilterFormBloc>()
+                              .add(const FilterFormEvent.enterPressed()),
+                          onFieldSubmitted: (_) => context
+                              .read<FilterFormBloc>()
+                              .add(const FilterFormEvent.enterPressed()),
+                        ),
+                      ),
+                      IconButton(
+                          icon: Icon(context.select(
+                                  (IssuesBloc bloc) => bloc.state.isDesc)
+                              ? Icons.arrow_circle_down
+                              : Icons.arrow_circle_up),
+                          onPressed: () => context
+                              .read<IssuesBloc>()
+                              .add(const IssuesEvent.toggleOrderAsked())),
+                    ],
                   ),
-                  onChanged: (value) => context
-                      .read<FilterFormBloc>()
-                      .add(FilterFormEvent.onFilterChanged(value)),
-                  onSaved: (_) => context
-                      .read<FilterFormBloc>()
-                      .add(const FilterFormEvent.enterPressed()),
-                  onFieldSubmitted: (_) => context
-                      .read<FilterFormBloc>()
-                      .add(const FilterFormEvent.enterPressed()),
                 ),
-              ),
-              if (state.moreIsLoading) ...[
-                const LinearProgressIndicator(),
+                if (state.moreIsLoading) ...[
+                  const LinearProgressIndicator(),
+                ],
+                if (issues.edges.isEmpty) ...[
+                  Expanded(
+                    child: Center(child: Text(l10n.resultEmpty)),
+                  ),
+                ] else
+                  Expanded(
+                    child: InfiniteScrollWidget(
+                      issues: state.issues!,
+                    ),
+                  ),
               ],
-              Expanded(
-                child: InfiniteScrollWidget(
-                  issues: state.issues!,
-                ),
-              ),
-            ]),
+            ),
           );
         });
   }

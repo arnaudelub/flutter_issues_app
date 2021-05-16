@@ -23,6 +23,7 @@ class FilterFormBloc extends Bloc<FilterFormEvent, FilterFormState> {
         final filter = _filterRepository.getFiltersFromString(
           state.filterString!,
         );
+        print("filter recieved: $filter");
         yield state.copyWith(onSave: optionOf(filter));
       }
     });

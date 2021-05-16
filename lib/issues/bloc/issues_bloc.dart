@@ -27,11 +27,15 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
         isLoading: true,
       );
       final issuesQuery = await _repository.watchPaginatedIssues();
-      yield state.copyWith(isLoading: false, issues: issuesQuery);
+      yield state.copyWith(
+          isLoading: false,
+          issues: issuesQuery,
+          isDesc: _repository.isSortedDesc!);
     }, setFiltersAsked: (SetFiltersAsked data) async* {
       final filter = data.filter;
-      if (filter.states != null) {
-        _repository.setStateFilterFromString(filter.states!);
+      if (filter != Filter.empty()) {
+        _repository.setFilter(filter);
+        yield state.copyWith(issues: null);
         add(const IssuesEvent.fetchIssuesAsked());
       }
     }, fetchMoreAsked: (FetchMoreAsked data) async* {
@@ -45,6 +49,9 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
         issues: state.issues!
             .copyWith(edges: [...state.issues!.edges, ...issuesQuery.edges]),
       );
+    }, toggleOrderAsked: (ToggleOrderAsked _) async* {
+      _repository.isSortedDesc = !_repository.isSortedDesc!;
+      add(const IssuesEvent.fetchIssuesAsked());
     });
   }
 

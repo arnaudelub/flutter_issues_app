@@ -1,0 +1,23 @@
+{
+    "@@locale": "fr",
+    "issueAppBarTitle": "Flutter issues",
+    "@issueAppBarTitle": {
+        "description": "Texto montré dans la AppBar de la page Issues"
+    },
+    "genericError": "Oups! Un problème est survenu!",
+    "@genericError": {
+        "description": "Text montré quand il y a une erreur"
+    },
+    "filterInputLabel": "Filtres",
+    "@filterInputLabel": {
+        "description": "Text montré dans le label de l input Filtres"
+    },
+    "filterInputHint": "states:open || states:closed || author:[author]",
+    "@filterInputHint": {
+        "description": "Text montré comme hint de l'input Filtre"
+    },
+    "resultEmpty": "Sans aucun resultat!",
+    "@resultEmpty": {
+        "description": "Text montré quand le resultat de la query est vide"
+    }
+}

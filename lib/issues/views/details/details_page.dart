@@ -5,6 +5,7 @@ import 'package:flutterissuesapp/issues/views/details/widgets/comment_widget.dar
 import 'package:flutterissuesapp/issues/views/details/widgets/header.dart';
 import 'package:flutterissuesapp/l10n/l10n.dart';
 import 'package:flutterissuesapp/utils/constants.dart';
+import 'package:github_api_repository/github_api_repository.dart';
 
 class DetailsPage extends StatelessWidget {
   const DetailsPage({Key? key, required this.issueNumber}) : super(key: key);
@@ -42,6 +43,15 @@ class DetailsView extends StatelessWidget {
     return BlocBuilder<DetailsBloc, DetailsState>(builder: (context, state) {
       if (state is DetailsReceived) {
         final issue = state.issue;
+
+        /// If filtering with author:[@me]
+        /// the query return ```__author: null__```
+        /// and because the token used to query the API
+        /// [@me] is actually me!
+        /// Using [@me] also return all issues where Author is [null]
+        final author =
+            issue.author ?? const Author(login: 'arnaudelub', avatarUrl: null);
+
         print(issue.comments!.edges);
         return SingleChildScrollView(
             child: Column(
@@ -53,8 +63,8 @@ class DetailsView extends StatelessWidget {
             CommentWidget(
                 body: issue.bodyText!,
                 createdAt: issue.createdAt,
-                name: issue.author!.login,
-                avatarUrl: issue.author!.avatarUrl),
+                name: author.login,
+                avatarUrl: author.avatarUrl),
             const SizedBox(height: kSpacer),
             ...List.generate(issue.comments!.edges.length, (index) {
               final comment = issue.comments!.edges[index]!.node;
@@ -63,8 +73,8 @@ class DetailsView extends StatelessWidget {
                 child: CommentWidget(
                     body: comment.bodyText!,
                     createdAt: comment.createdAt,
-                    name: comment.author!.login,
-                    avatarUrl: comment.author!.avatarUrl),
+                    name: author.login,
+                    avatarUrl: author.avatarUrl),
               );
             }),
           ],

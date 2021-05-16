@@ -31,17 +31,22 @@ void main() {
 
     blocTest<IssuesBloc, IssuesState>(
       'should emit state isLoading to true, then to false'
-      'with Issues when fetchIssues asked',
+      ' with Issues when fetchIssues asked',
       build: () => IssuesBloc(_mockGithubRepository),
       act: (bloc) {
         when(_mockGithubRepository.watchPaginatedIssues)
             .thenAnswer((_) async => issuesTest);
+        when(() => _mockGithubRepository.isSortedDesc).thenReturn(true);
         mockCloseRepository();
         bloc.add(const IssuesEvent.fetchIssuesAsked());
       },
       expect: () => [
-        const IssuesState(isLoading: true, moreIsLoading: false),
-        IssuesState(isLoading: false, moreIsLoading: false, issues: issuesTest)
+        const IssuesState(isLoading: true, moreIsLoading: false, isDesc: true),
+        IssuesState(
+            isLoading: false,
+            moreIsLoading: false,
+            issues: issuesTest,
+            isDesc: true)
       ],
     );
     blocTest<IssuesBloc, IssuesState>(
@@ -49,14 +54,20 @@ void main() {
       'with Issues when setFilter is asked with non null Filter()',
       build: () => IssuesBloc(_mockGithubRepository),
       act: (bloc) {
-        when(() => _mockGithubRepository.setStateFilterFromString(''))
+        when(() => _mockGithubRepository.setFilter(Filter.empty()))
             .thenAnswer((invocation) => Future.value(null));
+        when(() => _mockGithubRepository.isSortedDesc).thenReturn(true);
         mockCloseRepository();
         bloc.add(const IssuesEvent.setFiltersAsked(Filter(states: 'open')));
       },
       expect: () => [
-        const IssuesState(isLoading: true, moreIsLoading: false),
-        IssuesState(isLoading: false, moreIsLoading: false, issues: issuesTest)
+        const IssuesState(isLoading: false, moreIsLoading: false, isDesc: true),
+        const IssuesState(isLoading: true, moreIsLoading: false, isDesc: true),
+        IssuesState(
+            isLoading: false,
+            moreIsLoading: false,
+            issues: issuesTest,
+            isDesc: true)
       ],
     );
     blocTest<IssuesBloc, IssuesState>(
@@ -64,8 +75,9 @@ void main() {
       ' when setFilter is asked with null Filter()',
       build: () => IssuesBloc(_mockGithubRepository),
       act: (bloc) {
-        when(() => _mockGithubRepository.setStateFilterFromString(''))
+        when(() => _mockGithubRepository.setFilter(Filter.empty()))
             .thenAnswer((invocation) => Future.value(null));
+        when(() => _mockGithubRepository.isSortedDesc).thenReturn(true);
         mockCloseRepository();
         bloc.add(const IssuesEvent.setFiltersAsked(Filter()));
       },
@@ -77,7 +89,10 @@ void main() {
       ' when fetchMore is asked',
       build: () => IssuesBloc(_mockGithubRepository),
       seed: () => IssuesState(
-          isLoading: false, moreIsLoading: false, issues: issuesTest),
+          isLoading: false,
+          moreIsLoading: false,
+          issues: issuesTest,
+          isDesc: true),
       act: (bloc) {
         when(() => _mockGithubRepository.watchPaginatedIssues(after: ''))
             .thenAnswer((_) async => issuesTest);
@@ -85,9 +100,36 @@ void main() {
         bloc.add(const IssuesEvent.fetchMoreAsked(''));
       },
       expect: () => [
-        IssuesState(isLoading: false, moreIsLoading: true, issues: issuesTest),
         IssuesState(
-            isLoading: false, moreIsLoading: false, issues: issuesTest2),
+            isLoading: false,
+            moreIsLoading: true,
+            issues: issuesTest,
+            isDesc: true),
+        IssuesState(
+            isLoading: false,
+            moreIsLoading: false,
+            issues: issuesTest2,
+            isDesc: true),
+      ],
+    );
+    blocTest<IssuesBloc, IssuesState>(
+      'should emit state isLoading to true, then to false'
+      'with Issues and isDesc false when toggle order is asked',
+      build: () => IssuesBloc(_mockGithubRepository),
+      act: (bloc) {
+        when(_mockGithubRepository.watchPaginatedIssues)
+            .thenAnswer((_) async => issuesTest);
+        when(() => _mockGithubRepository.isSortedDesc).thenReturn(false);
+        mockCloseRepository();
+        bloc.add(const IssuesEvent.toggleOrderAsked());
+      },
+      expect: () => [
+        const IssuesState(isLoading: true, moreIsLoading: false, isDesc: true),
+        IssuesState(
+            isLoading: false,
+            moreIsLoading: false,
+            issues: issuesTest,
+            isDesc: false)
       ],
     );
   });
