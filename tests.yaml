@@ -1,7 +1,6 @@
 android-pixel-4:
   type: instrumentation
   app: build/app/outputs/bundle/productionRelease/app-production-release.aab
-  test: build/app/outputs/bundle/productionDebug/app-production-debug.aab
   device:
     - model: flame
       version: 29

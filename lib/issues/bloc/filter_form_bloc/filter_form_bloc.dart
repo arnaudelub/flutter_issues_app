@@ -21,11 +21,12 @@ class FilterFormBloc extends Bloc<FilterFormEvent, FilterFormState> {
     }, enterPressed: (EnterPressed value) async* {
       Filter? filter;
       if (state.filterString != '' && state.filterString != null) {
-        print('okkkk');
         filter = _filterRepository.getFiltersFromString(
           state.filterString!,
         );
         yield state.copyWith(onSave: optionOf(filter));
+      } else {
+        yield state;
       }
     });
   }
