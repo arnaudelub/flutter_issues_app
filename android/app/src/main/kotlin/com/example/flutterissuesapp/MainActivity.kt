@@ -1,4 +1,4 @@
-package com.example.flutterissuesapp
+package com.idelub.flutterissuesapp
 
 import io.flutter.embedding.android.FlutterActivity
 
