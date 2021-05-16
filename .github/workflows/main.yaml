@@ -15,9 +15,6 @@ jobs:
             SECRET_FILE: ${{ secrets.ENVS }}
         run: echo "$SECRET_FILE" | base64 --decode > .env
 
-      - name: flutter create .
-        run: flutter create .
-
       - name: Create google-services.json file for android
         env:
             GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
