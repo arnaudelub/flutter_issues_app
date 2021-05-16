@@ -1,6 +1,6 @@
 android-pixel-4:
   type: instrumentation
-  app: build/app/outputs/bundle/productionRelease/app-production-release.aab
+  app: build/app/outputs/flutter-apk/app-production-release.apk
   device:
     - model: flame
       version: 29
