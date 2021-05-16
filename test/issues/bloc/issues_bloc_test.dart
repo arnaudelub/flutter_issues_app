@@ -21,8 +21,9 @@ void main() {
       Edge(cursor: '', node: Node(id: '', createdAt: ''))
     ]);
 
+    final instanceBloc = IssuesBloc(_mockGithubRepository);
     test('initialState should be IssuesState.initial()', () {
-      expect(IssuesBloc(_mockGithubRepository).state, initialBlocTest);
+      expect(instanceBloc.state, initialBlocTest);
     });
 
     void mockCloseRepository() {
@@ -32,7 +33,7 @@ void main() {
     blocTest<IssuesBloc, IssuesState>(
       'should emit state isLoading to true, then to false'
       ' with Issues when fetchIssues asked',
-      build: () => IssuesBloc(_mockGithubRepository),
+      build: () => instanceBloc,
       act: (bloc) {
         when(_mockGithubRepository.watchPaginatedIssues)
             .thenAnswer((_) async => issuesTest);
@@ -52,7 +53,7 @@ void main() {
     blocTest<IssuesBloc, IssuesState>(
       'should emit state isLoading to true, then to false'
       'with Issues when setFilter is asked with non null Filter()',
-      build: () => IssuesBloc(_mockGithubRepository),
+      build: () => instanceBloc,
       act: (bloc) {
         when(() => _mockGithubRepository.setFilter(Filter.empty()))
             .thenAnswer((invocation) => Future.value(null));
@@ -73,7 +74,7 @@ void main() {
     blocTest<IssuesBloc, IssuesState>(
       'should emit nothing'
       ' when setFilter is asked with null Filter()',
-      build: () => IssuesBloc(_mockGithubRepository),
+      build: () => instanceBloc,
       act: (bloc) {
         when(() => _mockGithubRepository.setFilter(Filter.empty()))
             .thenAnswer((invocation) => Future.value(null));
@@ -87,7 +88,7 @@ void main() {
     blocTest<IssuesBloc, IssuesState>(
       'should emit moreIsLoading true then false with more issues'
       ' when fetchMore is asked',
-      build: () => IssuesBloc(_mockGithubRepository),
+      build: () => instanceBloc,
       seed: () => IssuesState(
           isLoading: false,
           moreIsLoading: false,
@@ -115,7 +116,7 @@ void main() {
     blocTest<IssuesBloc, IssuesState>(
       'should emit state isLoading to true, then to false'
       'with Issues and isDesc false when toggle order is asked',
-      build: () => IssuesBloc(_mockGithubRepository),
+      build: () => instanceBloc,
       act: (bloc) {
         when(_mockGithubRepository.watchPaginatedIssues)
             .thenAnswer((_) async => issuesTest);
