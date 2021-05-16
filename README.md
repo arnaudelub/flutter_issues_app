@@ -12,7 +12,7 @@ So my github workflow can't be tested at the moment!
 - Actually the issues page is an infinite scroll list which can be filtered with **states:open** and **states:closed** at the moment.
 - For the details page, each comment is wrapped inside ``__Markdown()__``, which is blocking the Listscroll
 - Theming: there is a switch on the AppBar to switch between dark and light theme
-- Github Action: It will check on formating, analyzing and test on push for branches main et dev. For the branch main, it will also publish the release build to Firebase App Publication
+- Github Action: It will check on formating, analyzing and test on push for branches main et dev. For the branch main, it will also publish the release build to Firebase App Publication and adding the appbundle to TestLab when pushed on dev branch
 
 ## How to build and test
 
