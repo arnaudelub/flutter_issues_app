@@ -73,7 +73,6 @@ class GithubApiRepository implements IGithubApiRepository {
     final result = await client.query(_option);
     if (result.hasException) {
       debugPrint(result.toString());
-      //_repoSubject.addError(result.exception!);
       throw QueryError();
     }
     // result.data can be either a [List<dynamic>] or a [Map<String, dynamic>]
@@ -127,6 +126,7 @@ class GithubApiRepository implements IGithubApiRepository {
     return issues;
   }
 
+  /// * [GraphQL github explorer](https://docs.github.com/en/graphql/overview/explorer)
   String _getIssueDetailsQuery() {
     return '''
 query issueDetails(\$nNumber: Int!){
@@ -178,6 +178,7 @@ query issueDetails(\$nNumber: Int!){
         ''';
   }
 
+  /// * [GraphQL github explorer](https://docs.github.com/en/graphql/overview/explorer)
   String _getPaginatedIssue(String? after) {
     var query = '''
 query readIssues(\$nIssues: Int!, \$states: [IssueState!]) {
