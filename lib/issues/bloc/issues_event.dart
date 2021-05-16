@@ -4,4 +4,5 @@ part of 'issues_bloc.dart';
 class IssuesEvent with _$IssuesEvent {
   const factory IssuesEvent.fetchIssuesAsked() = FetchIssuesAsked;
   const factory IssuesEvent.setFiltersAsked(Filter filter) = SetFiltersAsked;
+  const factory IssuesEvent.fetchMoreAsked(String after) = FetchMoreAsked;
 }

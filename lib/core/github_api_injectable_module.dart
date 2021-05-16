@@ -1,10 +1,7 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutterissuesapp/core/env/env.dart';
-import 'package:flutterissuesapp/core/hive_injectable_module.dart';
 import 'package:flutterissuesapp/injections.dart';
 import 'package:github_api_repository/github_api_repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_repository/hive_repository.dart';
 import 'package:injectable/injectable.dart';
 

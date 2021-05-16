@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterissuesapp/utils/constants.dart';
 import 'package:flutterissuesapp/utils/utils.dart';
-import 'package:github_api_repository/github_api_repository.dart';
 
 class UserHeader extends StatelessWidget {
   const UserHeader(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterissuesapp/issues/issues.dart';
 import 'package:flutterissuesapp/issues/views/widget/open_close_tag.dart';
 import 'package:flutterissuesapp/utils/utils.dart';
 import 'package:github_api_repository/github_api_repository.dart';

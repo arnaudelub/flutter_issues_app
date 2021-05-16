@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutterissuesapp/utils/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContentBox extends StatelessWidget {
   const ContentBox({Key? key, required this.body}) : super(key: key);
@@ -26,17 +27,14 @@ class ContentBox extends StatelessWidget {
                       bottomLeft: Radius.circular(kDefaultBorderRadius),
                       bottomRight: Radius.circular(kDefaultBorderRadius))),
               child: Markdown(
+                  onTapLink: (link, _, __) => launchUrl(link),
                   shrinkWrap: true,
-                  data:
-                      body) /*Text(
-                body,
-                textAlign: TextAlign.justify,
-                style: theme.textTheme.bodyText1!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),*/
-              ),
+                  data: body)),
         ),
       ],
     );
   }
+
+  Future<void> launchUrl(String url) async =>
+      await canLaunch(url) ? await launch(url) : print('Could not launch $url');
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutterissuesapp/issues/views/details/widgets/content_box.dart';
 import 'package:flutterissuesapp/issues/views/details/widgets/user_header.dart';
 import 'package:flutterissuesapp/utils/constants.dart';
-import 'package:github_api_repository/github_api_repository.dart';
 
 class CommentWidget extends StatelessWidget {
   const CommentWidget(

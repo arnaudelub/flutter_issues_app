@@ -13,7 +13,6 @@ import 'package:flutterissuesapp/issues/bloc/bloc.dart';
 import 'package:flutterissuesapp/l10n/l10n.dart';
 import 'package:flutterissuesapp/router/router.dart';
 import 'package:flutterissuesapp/theme/cubit/theme_cubit.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:routemaster/routemaster.dart';
 
 class App extends StatelessWidget {
@@ -25,9 +24,6 @@ class App extends StatelessWidget {
     return MultiBlocProvider(providers: [
       BlocProvider(
         create: (_) => getIt<ThemeCubit>()..setModeFromCache(),
-      ),
-      BlocProvider(
-        create: (_) => getIt<FetchMoreBloc>(),
       ),
       BlocProvider(
         create: (_) => getIt<IssuesBloc>()

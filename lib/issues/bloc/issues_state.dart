@@ -2,7 +2,14 @@ part of 'issues_bloc.dart';
 
 @freezed
 class IssuesState with _$IssuesState {
-  const factory IssuesState.initialIssues() = InitialIssues;
-  const factory IssuesState.isLoading() = IsLoading;
-  const factory IssuesState.issuesSuccess(Issues issues) = IssuesSuccess;
+  const factory IssuesState({
+    required bool isLoading,
+    required bool moreIsLoading,
+    Issues? issues,
+  }) = _IssueState;
+
+  factory IssuesState.initial() => const IssuesState(
+        isLoading: false,
+        moreIsLoading: false,
+      );
 }

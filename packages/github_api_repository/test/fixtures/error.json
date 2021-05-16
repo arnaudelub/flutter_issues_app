@@ -1,0 +1,10 @@
+{
+    "data": {
+        "repository":{
+            "error": {
+                "type": "error type",
+                "message": "message_error"
+            }
+        }
+    }
+}

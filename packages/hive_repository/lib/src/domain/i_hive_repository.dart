@@ -1,5 +1,3 @@
-import 'package:hive_repository/hive_repository.dart';
-
 abstract class IHiveRepository {
   Future<void> addIssue({required String id, String? updatedAt});
   bool isCached(String id);
@@ -8,3 +6,5 @@ abstract class IHiveRepository {
   bool getIsDarkModeCache();
   Future<void> removeIssue(String id);
 }
+
+class CacheError extends Error {}

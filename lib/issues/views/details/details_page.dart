@@ -42,7 +42,7 @@ class DetailsView extends StatelessWidget {
     return BlocBuilder<DetailsBloc, DetailsState>(builder: (context, state) {
       if (state is DetailsReceived) {
         final issue = state.issue;
-        print(issue);
+        print(issue.comments!.edges);
         return SingleChildScrollView(
             child: Column(
           children: [

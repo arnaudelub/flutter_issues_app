@@ -40,6 +40,7 @@ class HiveRepository implements IHiveRepository {
       }
     } catch (e) {
       debugPrint(e.toString());
+      throw CacheError();
     }
   }
 
@@ -48,7 +49,8 @@ class HiveRepository implements IHiveRepository {
     try {
       await settingsBox.put(themeModeKey, isDarkMode);
     } catch (e) {
-      throw UnimplementedError();
+      debugPrint(e.toString());
+      throw CacheError();
     }
   }
 
@@ -63,12 +65,4 @@ class HiveRepository implements IHiveRepository {
   bool getIsDarkModeCache() {
     return settingsBox.get(themeModeKey, defaultValue: false);
   }
-}
-
-class SettingsBox<bool> {
-  final LazyBox<bool> box = Hive.lazyBox(settingsBoxName);
-}
-
-class IssuesBox<FlutterIssue> {
-  final LazyBox<FlutterIssue> box = Hive.lazyBox(issuesBoxName);
 }

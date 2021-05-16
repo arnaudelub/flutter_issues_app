@@ -1,0 +1,18 @@
+{
+  "data": {
+    "repository": {
+      "issue": {
+        "id": "MDU6SXNzdWU4OTIyMDY0ODY=",
+        "author": {
+          "login": "kjeremy",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/4325700?u=c3bdf18a0e4055ff94c1ea326dac6e4a016c65ee&v=4"
+        },
+        "title": "video_player plugin: Update exoplayer to 2.14 for RTSP support",
+        "createdAt": "2021-05-14T20:12:14Z",
+        "updatedAt": "2021-05-14T20:12:14Z",
+        "closedAt": null,
+        "state": "OPEN"
+      }
+    }
+  }
+}

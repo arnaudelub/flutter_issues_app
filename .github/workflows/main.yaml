@@ -63,4 +63,4 @@ jobs:
         with:
           exclude: "lib/**.freezed.dart lib/**.g.dart"
           path: "./coverage/lcov.info"
-          min_coverage: 60
+          min_coverage: 50

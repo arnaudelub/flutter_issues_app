@@ -1,62 +1,41 @@
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_repository/hive_repository.dart';
 
+class MockHiveInterface extends Mock implements HiveInterface {}
+
 class MockSettingsBox<T> extends Mock implements Box<bool> {}
 
 class MockIssuesBox<T> extends Mock implements Box<Map<String, dynamic>> {}
 
-class MockHiveBox<T> extends Mock implements LazyBox<T> {}
-
 void main() {
-  late MockSettingsBox<bool> mockSettingsBox;
-  late MockIssuesBox<Map<String, dynamic>> mockIssuesBox;
-  late IHiveRepository hiveRepository;
-  late MockHiveBox<bool> mockHiveBox;
+  late MockHiveInterface _mockHiveInterface;
+  late MockSettingsBox<bool> _mockSettingsBox;
+  late MockIssuesBox<Map<String, dynamic>> _mockIssuesBox;
+  late IHiveRepository _hiveRepository;
 
   setUpAll(() {
-    mockSettingsBox = MockSettingsBox<bool>();
-    hiveRepository =
-        HiveRepository(settingsBox: mockSettingsBox, issuesBox: mockIssuesBox);
-  });
-
-  group('flutter_issue_adapter', () {
-    test('test', () {
-      // Todo
-    });
+    _mockHiveInterface = MockHiveInterface();
+    _mockSettingsBox = MockSettingsBox<bool>();
+    _mockIssuesBox = MockIssuesBox<Map<String, dynamic>>();
+    _hiveRepository = HiveRepository(
+        settingsBox: _mockSettingsBox, issuesBox: _mockIssuesBox);
+    registerFallbackValue(_mockHiveInterface);
   });
 
   group('Hive Repository', () {
-    setUp(() {
-      mockIssuesBox = MockIssuesBox();
-      mockSettingsBox = MockSettingsBox();
-      hiveRepository = HiveRepository(
-          settingsBox: mockSettingsBox, issuesBox: mockIssuesBox);
-
-      mockHiveBox = MockHiveBox<bool>();
-    });
     test('hiveRepository should be an instance of IHiveRepository', () {
-      expect(hiveRepository, isA<IHiveRepository>());
+      expect(_hiveRepository, isA<IHiveRepository>());
     });
 
     test('Should cache the isDarkMode boolean value', () async {
-      //final putAction = mockSettingsBox.put(themeModeKey, true);
-      mockIssuesBox = MockIssuesBox();
-      mockSettingsBox = MockSettingsBox();
-      hiveRepository = HiveRepository(
-          settingsBox: mockSettingsBox, issuesBox: mockIssuesBox);
-
-      mockHiveBox = MockHiveBox<bool>();
-
-      //when(() => putAction).thenAnswer((_) async {});
-      //when(() => mockSettingsBox.box).thenReturn(mockHiveBox);
-      await hiveRepository.switchSettingThemeMode(isDarkMode: true);
-      verify(() => mockHiveBox.put(themeModeKey, true));
-      //verify(() async => putAction).called(1);
-      //expect(mockSettingsBox.isOpen, isTrue);
+      when(() => _mockSettingsBox.put(any(), any()))
+          .thenAnswer((invocation) => Future.value(null));
+      await _hiveRepository.switchSettingThemeMode(isDarkMode: true);
+      verify(() => _mockSettingsBox.put(themeModeKey, true)).called(1);
+      final res = _mockSettingsBox.get(themeModeKey);
+      print(res);
     });
   });
 }
