@@ -1,8 +1,9 @@
-name: flutterissuesapp
+
+name: flutterissuesapp-dev
 
 on:
    push :
-        branches: [master]
+        branches: [dev]
 
 jobs:
   build:
@@ -17,20 +18,6 @@ jobs:
             SECRET_FILE: ${{ secrets.ENVS }}
         run: echo "$SECRET_FILE" | base64 --decode > .env
 
-      - name: Create google-services.json file for android
-        env:
-            GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
-        run: echo "$GOOGLE_SERVICES" | base64 --decode > android/app/src/google-services.json
-
-      - name: Adding keystore and envs
-        env:
-            KEYSTOREFILE: ${{ secrets.KEYSTORE }}
-            PRIVATE_KEY_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD }}
-            KEYSTORE_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PASSWORD }}
-            ALIAS: ${{ FLUTTERISSUESAPP_ANDROID_KEYSTORE_ALIAS }}
-        run: |
-            mkdir ~/keystores
-            echo "KEYSTOREFILE" | base64 --decode > ~/keystores/flutterissuesapp-key.keystore
       #Inside package Helper_repository
       - name: Install dependencies
         working-directory: ./packages/helper_repository
@@ -80,14 +67,4 @@ jobs:
         with:
           exclude: "lib/**.freezed.dart lib/**.g.dart"
           path: "./coverage/lcov.info"
-          min_coverage: 50
-      - name: Build the app
-        run: flutter build apk  --flavor production -t lib/main_production.dart
-
-      - name: upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          token: ${{secrets.FIREBASE_TOKEN}}
-          groups: mediamarkts
-          file: build/app/outputs/flutter-apk/app-production-release.apk
+          min_coverage: 10
