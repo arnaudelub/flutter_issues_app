@@ -17,6 +17,20 @@ jobs:
         env:
             SECRET_FILE: ${{ secrets.ENVS }}
         run: echo "$SECRET_FILE" | base64 --decode > .env
+      - name: Create google-services.json file for android
+        env:
+            GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+        run: echo "$GOOGLE_SERVICES" | base64 --decode > android/app/src/google-services.json
+
+      - name: Adding keystore and envs
+        env:
+            KEYSTOREFILE: ${{ secrets.KEYSTORE }}
+            PRIVATE_KEY_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD }}
+            KEYSTORE_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PASSWORD }}
+            ALIAS: ${{ FLUTTERISSUESAPP_ANDROID_KEYSTORE_ALIAS }}
+        run: |
+            mkdir ~/keystores
+            echo "KEYSTOREFILE" | base64 --decode > ~/keystores/flutterissuesapp-key.keystore
 
       #Inside package Helper_repository
       - name: Install dependencies Helper Repository
@@ -89,3 +103,13 @@ jobs:
           exclude: "lib/**.freezed.dart lib/**.g.dart"
           path: "./coverage/lcov.info"
           min_coverage: 10
+
+      - name: Build the app
+        run: flutter build appbundle  --flavor production -t lib/main_production.dart
+
+      - name: Run tests on Firebase Test Lab
+        uses: asadmansr/Firebase-Test-Lab-Action@v1.0
+        with:
+          arg-spec: 'testLab.yaml:android-pixel-4'
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT_KEY }}

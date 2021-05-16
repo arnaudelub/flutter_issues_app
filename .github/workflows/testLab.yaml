@@ -1,0 +1,8 @@
+android-pixel-4:
+  type: instrumentation
+  app: build/app/outputs/bundle/productionRelease/app-production-release.aab
+  device:
+    - model: flame
+      version: 29
+      locale: 'en'
+      orientation: portrait
