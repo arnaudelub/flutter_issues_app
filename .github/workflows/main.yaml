@@ -32,7 +32,7 @@ jobs:
             mkdir ~/keystores
             echo "KEYSTOREFILE" | base64 --decode > ~/keystores/flutterissuesapp-key.keystore
       #Inside package Helper_repository
-      - name: Install dependencies
+      - name: Install dependencies Helper Repository
         working-directory: ./packages/helper_repository
         run: flutter packages get
       - name: format
@@ -46,7 +46,7 @@ jobs:
         run: flutter test --no-pub --coverage --test-randomize-ordering-seed random
 
       # Inside package Hive repository
-      - name: Install dependencies
+      - name: Install dependencies Hive repository
         working-directory: ./packages/hive_repository
         run: flutter packages get
       - name: format
@@ -63,8 +63,29 @@ jobs:
         working-directory: ./packages/hive_repository
         run: flutter test --no-pub --coverage --test-randomize-ordering-seed random
 
-      - name: Install Dependencies
+      # Inside package Github repository
+      - name: Install dependencies Github repository
+        working-directory: ./packages/github_api_repository
         run: flutter packages get
+      - name: format
+        working-directory: ./packages/hive_repository
+        run: flutter format --set-exit-if-changed lib test
+      - name: Run build_runner
+        working-directory: ./packages/github_api_repository
+        run: |
+            flutter pub run build_runner build --delete-conflicting-outputs
+      - name: Analyze
+        working-directory: ./packages/github_api_repository
+        run: flutter analyze lib test
+      - name: Run tests
+        working-directory: ./packages/github_api_repository
+        run: flutter test --no-pub --coverage --test-randomize-ordering-seed random
+
+      - name: Install Dependencies root
+        run: flutter packages get
+      - name: Run build_runner
+        run: |
+            flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Format
         run: flutter format --set-exit-if-changed lib test

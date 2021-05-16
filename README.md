@@ -4,6 +4,9 @@
 Since the begining of the day there is a major outage on github:[Source](https://www.githubstatus.com/incidents/zbpwygxwb3gw)
 So my github workflow can't be tested at the moment!
 
+### [EDIT 20H00]
+- Github action seems to be up
+
 ## Implementation
 
 - Actually the issues page is an infinite scroll list which can be filtered with **states:open** and **states:closed** at the moment.
