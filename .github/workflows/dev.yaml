@@ -22,15 +22,6 @@ jobs:
             GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
         run: echo "$GOOGLE_SERVICES" | base64 --decode > android/app/google-services.json
 
-      - name: Adding keystore and envs
-        env:
-            KEYSTOREFILE: ${{ secrets.KEYSTORE }}
-            PRIVATE_KEY_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD }}
-            KEYSTORE_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PASSWORD }}
-            ALIAS: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_ALIAS }}
-        run: |
-            mkdir ~/keystores
-            echo "KEYSTOREFILE" | base64 --decode > ~/keystores/flutterissuesapp-key.keystore
 
       #Inside package Helper_repository
       - name: Install dependencies Helper Repository
@@ -104,8 +95,16 @@ jobs:
           path: "./coverage/lcov.info"
           min_coverage: 10
 
-      - name: Build the app
-        run: flutter build appbundle  --flavor production -t lib/main_production.dart
+      - name: Adding keystore and envs then build appbundle
+        env:
+            KEYSTOREFILE: ${{ secrets.KEYSTORE }}
+            FLUTTERISSUESAPP_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD : ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD }}
+            FLUTTERISSUESAPP_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PASSWORD }}
+            FLUTTERISSUESAPP_ANDROID_KEYSTORE_ALIAS: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_ALIAS }}
+        run: |
+            mkdir ~/keystores
+            echo "$KEYSTOREFILE" | base64 --decode > ~/keystores/flutterissuesapp-key.keystore
+            flutter build appbundle --flavor production -t lib/main_production.dart -v
 
       - name: Run tests on Firebase Test Lab
         uses: asadmansr/Firebase-Test-Lab-Action@v1.0

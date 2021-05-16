@@ -14,6 +14,12 @@ So my github workflow can't be tested at the moment!
 - Theming: there is a switch on the AppBar to switch between dark and light theme
 - Github Action: It will check on formating, analyzing and test on push for branches main et dev. For the branch main, it will also publish the release build to Firebase App Publication and adding the appbundle to TestLab when pushed on dev branch
 
+## Folder structures
+
+- Bloc and UI can be found directly in the lib folder
+- The repositories are stored inside separated packages so it can be more maintainable and reusable (github repo or packages on pub.dev). Entities are in the domain folder and the data layer is inside infrastructure folder.
+- In all the project, each folder contains a barrel file that export every file of the parent folder(s) (if any) and current folder
+
 ## How to build and test
 
 For the sake of simplicity i am leaving here VGV readme
