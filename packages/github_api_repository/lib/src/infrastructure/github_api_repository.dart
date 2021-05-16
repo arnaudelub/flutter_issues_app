@@ -16,6 +16,8 @@ const availableFilterState = [
   'closed',
 ];
 
+class QueryError extends Error {}
+
 class GithubApiRepository implements IGithubApiRepository {
   GithubApiRepository(this.client, this._hiveRepository);
 
@@ -84,8 +86,7 @@ class GithubApiRepository implements IGithubApiRepository {
     final result = await client.query(_option);
 
     if (result.hasException) {
-      print(result.exception!);
-      throw Exception();
+      throw QueryError();
     }
 
     // result.data can be either a [List<dynamic>] or a [Map<String, dynamic>]
@@ -105,11 +106,10 @@ class GithubApiRepository implements IGithubApiRepository {
       fetchResults: false,
     );
     final result = await client.query(_option);
-
     if (result.hasException) {
       debugPrint(result.toString());
       _repoSubject.addError(result.exception!);
-      throw UnimplementedError();
+      throw QueryError();
     }
     // result.data can be either a [List<dynamic>] or a [Map<String, dynamic>]
     final issue = getIssueFromResponse(result.data!);
@@ -122,7 +122,6 @@ class GithubApiRepository implements IGithubApiRepository {
   }
 
   String _getPaginatedIssue(String? after) {
-    print("Received after: $after");
     var query = '''
 query readIssues(\$nIssues: Int!, \$states: [IssueState!]) {
   repository(name: \"flutter\", owner: \"flutter\") {
@@ -190,7 +189,7 @@ query issueDetails(\$nNumber: Int!){
           }
         }
       }
-      comments(last: 50, orderBy: {field: UPDATED_AT, direction: DESC}) {
+      comments(last: 100, orderBy: {field: UPDATED_AT, direction: DESC}) {
         totalCount
         edges {
           cursor

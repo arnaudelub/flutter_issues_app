@@ -12,7 +12,7 @@ class CommentsDto with _$CommentsDto {
 
   factory CommentsDto({
     required int totalCount,
-    @EdgeConverter() required List<Edge?> comments,
+    @JsonKey(name: 'edges') @EdgeConverter() required List<Edge?> comments,
   }) = _CommentsDto;
 
   factory CommentsDto.fromDomain(EdgeParent comments) =>

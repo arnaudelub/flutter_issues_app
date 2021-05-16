@@ -16,6 +16,7 @@ dependencies:
   hive_repository:
     path: ../hive_repository
   json_annotation: ^4.0.1
+  mocktail: ^0.1.2
   rxdart: ^0.26.0
 
 dev_dependencies:
