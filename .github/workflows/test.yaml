@@ -33,6 +33,28 @@ jobs:
             mkdir ~/keystores
             echo "KEYSTOREFILE" | base64 --decode > ~/keystores/flutterissuesapp-key.keystore
 
+      #Inside package Helper_repository
+      - name: Install dependencies Helper Repository
+        working-directory: ./packages/helper_repository
+        run: flutter packages get
+
+      # Inside package Hive repository
+      - name: Install dependencies Hive Repository
+        working-directory: ./packages/hive_repository
+        run: flutter packages get
+      - name: Run build_runner
+        working-directory: ./packages/hive_repository
+        run: |
+            flutter pub run build_runner build --delete-conflicting-outputs
+
+      # Inside package Github repository
+      - name: Install dependencies Github repository
+        working-directory: ./packages/github_api_repository
+        run: flutter packages get
+      - name: Run build_runner
+        working-directory: ./packages/github_api_repository
+        run: |
+            flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Install Dependencies root
         run: flutter packages get
@@ -41,7 +63,7 @@ jobs:
             flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Build the app
-        run: flutter build apk --flavor production -t lib/main_production.dart
+        run: flutter build apk --flavor production -t lib/main_production.dart -v
 
       - name: Run tests on Firebase Test Lab
         uses: asadmansr/Firebase-Test-Lab-Action@v1.0
