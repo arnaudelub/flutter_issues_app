@@ -27,7 +27,7 @@ jobs:
             KEYSTOREFILE: ${{ secrets.KEYSTORE }}
             PRIVATE_KEY_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD }}
             KEYSTORE_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PASSWORD }}
-            ALIAS: ${{ FLUTTERISSUESAPP_ANDROID_KEYSTORE_ALIAS }}
+            ALIAS: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_ALIAS }}
         run: |
             mkdir ~/keystores
             echo "KEYSTOREFILE" | base64 --decode > ~/keystores/flutterissuesapp-key.keystore
