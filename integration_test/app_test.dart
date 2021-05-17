@@ -1,4 +1,5 @@
-import 'package:bloc_test/bloc_test.dart';
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +15,6 @@ import 'package:hive_repository/hive_repository.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../test/helpers/helpers.dart';
 import 'helpers/initiate_app.dart';
 
 class MockGithubRepository extends Mock implements IGithubApiRepository {}
@@ -41,11 +41,30 @@ void main() {
     // await binding.takeScreenshot('issues_page');
   });
 
+  testWidgets('should find the DetailsPage after tapping on a card',
+      (WidgetTester tester) async {
+    const issueCardFinderTest = Key('issue card 1');
+    await tester.pumpWidget(const App());
+    await tester.pumpAndSettle();
+    expect(find.byType(IssuesPage), findsOneWidget);
+
+    // This page should contains the search form and the sort button
+    // and an infinite scroll with the issues cards
+    expect(find.byKey(searchFormKey), findsOneWidget);
+    expect(find.byKey(sortButtonKey), findsOneWidget);
+    expect(find.byKey(infinitScrollKey), findsOneWidget);
+    expect(find.byType(IssueCard), findsWidgets);
+    // Take a screenshot not available with SDK
+    // await binding.takeScreenshot('issues_page');
+    await tester.tap(find.byKey(issueCardFinderTest));
+    await tester.pumpAndSettle();
+    expect(find.byType(DetailsPage), findsOneWidget);
+  });
+
   testWidgets('Should navigate to details page when an issue card is tapped',
       (WidgetTester tester) async {
     final mockGitRepo = MockGithubRepository();
     final mockHiveRepo = MockHiveRepository();
-    const issueCardFinderTest = Key('issue card 1');
     const testIssue = Issue(
         id: 'foo',
         author:
@@ -53,14 +72,14 @@ void main() {
         title: 'title',
         state: 'open',
         bodyText: 'hello world',
-        createdAt: 'created date',
-        updatedAt: 'update date',
+        createdAt: '2015-11-07T07:43:04Z',
+        updatedAt: '2015-11-07T07:43:04Z',
         comments: EdgeParent(totalCount: 2, edges: [
           Edge(
               cursor: '',
               node: Node(
                   id: '',
-                  createdAt: 'date',
+                  createdAt: '2015-11-07T07:43:04Z',
                   bodyText: 'hi',
                   author: Author(
                       login: 'joe', avatarUrl: 'https://placeholder.com/250'))),
@@ -68,7 +87,7 @@ void main() {
               cursor: '',
               node: Node(
                   id: '',
-                  createdAt: 'date',
+                  createdAt: '2015-11-07T07:43:04Z',
                   bodyText: 'hi 2',
                   author: Author(
                       login: 'joe', avatarUrl: 'https://placeholder.com/250')))
@@ -82,12 +101,15 @@ void main() {
       ),
     );
 
+    final streamController = StreamController<Issue>();
+    when(() => mockGitRepo.repoStream)
+        .thenAnswer((_) => streamController.stream);
     when(() => mockGitRepo.getIssueDetails(any()))
         .thenAnswer((_) => Future.value(testIssue));
     when(() => mockHiveRepo.addIssue(
             id: any(named: 'id'), updatedAt: any(named: 'updatedAt')))
         .thenAnswer((invocation) async => Future.value(null));
-
+    streamController.add(testIssue);
     await tester.pumpWidget(MaterialApp(
       localizationsDelegates: [
         AppLocalizations.delegate,
@@ -97,9 +119,6 @@ void main() {
       home: pumpWidgetTest,
     ));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(issueCardFinderTest));
-    await tester.pumpAndSettle();
-    expect(find.byType(DetailsPage), findsOneWidget);
     expect(find.byKey(headerKey), findsOneWidget);
     expect(find.byKey(postBoxKey), findsOneWidget);
     expect(find.byKey(commentBoxKey), findsNWidgets(2));
