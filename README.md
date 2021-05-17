@@ -1,5 +1,15 @@
 # Flutterissuesapp
 
+## WARNINGS!!!
+
+This project is using the integration_test SDK so it Flutter has to be on the beta channel for now, see * [integration section](#integration) for more info
+otherwise, you can use:
+```yaml
+override_dependencies:
+    crypto: ^3.0.0
+    convert: ^3.0.0
+    args: ^2.0.0
+```
 ## GITHUB OUTAGE 16/05
 Since the begining of the day there is a major outage on github:[Source](https://www.githubstatus.com/incidents/zbpwygxwb3gw)
 So my github workflow can't be tested at the moment!
@@ -29,10 +39,19 @@ So my github workflow can't be tested at the moment!
 1. __flutter pub run build_runner build --delete-conflicting-outputs__
 2. Repeat the same command inside each package in packages/
 
-### Run the integration test
+### <a name="integration"></a>Run the integration test
 
 - flutter drive --flavor development --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d <DEVICE_ID>
 
+- To generate the APK files for TestLab, see more info in * [integration_test usage page](https://github.com/flutter/flutter/tree/master/packages/integration_test#usage)
+```bash
+pushd android
+# flutter build generates files in android/ for building the app
+flutter build apk --flavor production -t lib/main_production.dart
+gradle app:assembleAndroidTest
+gradle app:assembleDebug -Ptarget=integration_test/app_test.dart
+popd
+```
 For the sake of simplicity i am leaving here VGV readme
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,6 +1,8 @@
 android-pixel-4:
   type: instrumentation
   app: build/app/outputs/bundle/productionRelease/app-production-release.aab
+  # TODO: Set the name of test apk file
+  test: build/app/outputs/apk/androidTest/debug/<file>.apk
   device:
     - model: flame
       version: 29

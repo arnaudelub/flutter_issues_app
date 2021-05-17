@@ -51,6 +51,13 @@ dev_dependencies:
   mocktail: ^0.1.2
   very_good_analysis: ^2.0.3
 
+## When on stable channel, uncomment this
+## to avoir dependencies incompatibilities
+# dependency_overrides:
+#  crypto: ^3.0.0
+#  convert: ^3.0.0
+#  args: ^2.0.0
+
 flutter:
   uses-material-design: true
   generate: true
