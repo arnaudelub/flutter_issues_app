@@ -53,31 +53,13 @@ class MockFilterRepository extends Mock implements IFilterRepository {}
 extension PumpApp on WidgetTester {
   Future<void> pumpApp(Widget? widget) {
     return pumpWidget(
-      MultiBlocProvider(
-        providers: [
-          BlocProvider.value(
-            value: IssuesBloc(MockGithubRepository()),
-          ),
-          BlocProvider.value(
-            value: DetailsBloc(MockGithubRepository(), MockHiveRepository()),
-          ),
-          BlocProvider.value(
-            value: FilterFormBloc(MockFilterRepository()),
-          ),
-          BlocProvider.value(
-            value: ThemeCubit(MockHiveRepository()),
-          ),
+      MaterialApp(
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
         ],
-        child: MaterialApp.router(
-          localizationsDelegates: [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routeInformationParser: const RoutemasterParser(),
-          routerDelegate: RoutemasterDelegate(
-              routesBuilder: (context) => IssuesRouter.routes),
-        ),
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: widget,
       ),
     );
   }

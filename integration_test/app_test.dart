@@ -10,13 +10,23 @@ import 'package:github_api_repository/github_api_repository.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../test/helpers/helpers.dart';
 import 'helpers/initiate_app.dart';
 
-class MockDetailsBloc extends Mock implements DetailsBloc {}
+class MockDetailsBloc extends MockBloc<DetailsEvent, DetailsState>
+    implements DetailsBloc {}
+
+class FakeDetailsEvent extends Mock implements DetailsEvent {}
+
+class FakeDetailsState extends Mock implements DetailsState {}
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
+  setUpAll(() {
+    registerFallbackValue(FakeDetailsState());
+    registerFallbackValue(FakeDetailsEvent());
+  });
   testWidgets('Launch the app correctly', (WidgetTester tester) async {
     await initiateApp();
     await tester.pumpWidget(const App());
@@ -71,8 +81,8 @@ void main() {
       initialState: 0,
     );
     final pumpWidgetTest = BlocProvider<DetailsBloc>.value(
-        value: mockDetailsBloc, child: const DetailsPage(issueNumber: 2));
-    await tester.pumpWidget(pumpWidgetTest);
+        value: mockDetailsBloc, child: const DetailsView());
+    await tester.pumpApp(pumpWidgetTest);
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(issueCardFinderTest));
     await tester.pumpAndSettle();
