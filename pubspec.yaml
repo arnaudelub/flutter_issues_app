@@ -38,11 +38,15 @@ dependencies:
 dev_dependencies:
   build_runner:
   bloc_test: ^8.0.0
+  envify_generator: ^2.0.0
   flutter_test:
     sdk: flutter
-  envify_generator: ^2.0.0
+  flutter_driver:
+    sdk: flutter
   freezed: ^0.14.2
   injectable_generator: ^1.4.0
+  integration_test:
+    sdk: flutter
   json_serializable: ^4.1.1
   mocktail: ^0.1.2
   very_good_analysis: ^2.0.3

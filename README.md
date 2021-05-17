@@ -20,10 +20,22 @@ So my github workflow can't be tested at the moment!
 - The repositories are stored inside separated packages so it can be more maintainable and reusable (github repo or packages on pub.dev). Entities are in the domain folder and the data layer is inside infrastructure folder.
 - In all the project, each folder contains a barrel file that export every file of the parent folder(s) (if any) and current folder
 
+
+
 ## How to build and test
+
+### Generate the code
+
+1. __flutter pub run build_runner build --delete-conflicting-outputs__
+2. Repeat the same command inside each package in packages/
+
+### Run the integration test
+
+- flutter drive --flavor development --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d <DEVICE_ID>
 
 For the sake of simplicity i am leaving here VGV readme
 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 [![Very Good Ventures][logo]][very_good_ventures_link]
 

@@ -13,15 +13,14 @@ class IssueCard extends StatelessWidget {
     final node = issue.node;
     final createdAt = formatDate(node.createdAt);
 
-    /// If filtering with author:[@me]
+    /// If filtering with author:__@me__
     /// the query return ```__author: null__```
     /// and because the token used to query the API
-    /// [@me] is actually me!
-    /// Using [@me] also return all issues where Author is [null]
+    /// __@me__ is actually me!
+    /// Using __@me__ also return all issues where Author is __null__
     final author =
         node.author ?? const Author(login: 'arnaudelub', avatarUrl: null);
     final theme = Theme.of(context);
-    print(issue);
     return Card(
       child: ListTile(
         isThreeLine: true,

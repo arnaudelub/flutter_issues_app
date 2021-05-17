@@ -74,7 +74,7 @@ android {
         }
         staging {
             dimension "default"
-            applicationIdSuffix ".stg"
+            //applicationIdSuffix ".stg"
         }
         development {
             dimension "default"
