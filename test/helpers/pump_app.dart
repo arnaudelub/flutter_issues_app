@@ -8,18 +8,15 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterissuesapp/issues/bloc/bloc.dart';
 import 'package:flutterissuesapp/issues/issues.dart';
 import 'package:flutterissuesapp/l10n/l10n.dart';
-import 'package:flutterissuesapp/router/router.dart';
 import 'package:flutterissuesapp/theme/cubit/theme_cubit.dart';
 import 'package:github_api_repository/github_api_repository.dart';
 import 'package:hive_repository/hive_repository.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:routemaster/routemaster.dart';
 
 class MockIssuesBloc extends MockBloc<IssuesEvent, IssuesState>
     implements IssuesBloc {}

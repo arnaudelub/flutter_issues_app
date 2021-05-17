@@ -80,8 +80,10 @@ void main() {
       Stream.fromIterable([testIssue]),
       initialState: 0,
     );
-    final pumpWidgetTest = BlocProvider<DetailsBloc>.value(
-        value: mockDetailsBloc, child: const DetailsView());
+    final pumpWidgetTest = BlocProvider(
+        create: (_) =>
+            mockDetailsBloc..add(const DetailsEvent.watchIssueDetailsAsked(1)),
+        child: const DetailsView());
     await tester.pumpApp(pumpWidgetTest);
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(issueCardFinderTest));
