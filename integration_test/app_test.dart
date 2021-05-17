@@ -23,7 +23,44 @@ class MockHiveRepository extends Mock implements IHiveRepository {}
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  final mockGitRepo = MockGithubRepository();
+  final mockHiveRepo = MockHiveRepository();
+  const testIssue = Issue(
+      id: 'foo',
+      author: Author(login: 'Arnaud', avatarUrl: 'https://placholder.com/250'),
+      title: 'title',
+      state: 'open',
+      bodyText: 'hello world',
+      createdAt: '2015-11-07T07:43:04Z',
+      updatedAt: '2015-11-07T07:43:04Z',
+      comments: EdgeParent(totalCount: 2, edges: [
+        Edge(
+            cursor: '',
+            node: Node(
+                id: '',
+                createdAt: '2015-11-07T07:43:04Z',
+                bodyText: 'hi',
+                author: Author(
+                    login: 'joe', avatarUrl: 'https://placeholder.com/250'))),
+        Edge(
+            cursor: '',
+            node: Node(
+                id: '',
+                createdAt: '2015-11-07T07:43:04Z',
+                bodyText: 'hi 2',
+                author: Author(
+                    login: 'joe', avatarUrl: 'https://placeholder.com/250')))
+      ]),
+      labels: EdgeParent(totalCount: 0, edges: []));
+  final pumpWidgetTest = BlocProvider(
+    create: (_) => DetailsBloc(mockGitRepo, mockHiveRepo)
+      ..add(const DetailsEvent.watchIssueDetailsAsked(1)),
+    child: Builder(
+      builder: (context) => const Scaffold(body: DetailsView()),
+    ),
+  );
 
+  final streamController = StreamController<Issue>();
   setUpAll(() {});
   testWidgets('Launch the app correctly', (WidgetTester tester) async {
     await initiateApp();
@@ -63,45 +100,6 @@ void main() {
 
   testWidgets('Should navigate to details page when an issue card is tapped',
       (WidgetTester tester) async {
-    final mockGitRepo = MockGithubRepository();
-    final mockHiveRepo = MockHiveRepository();
-    const testIssue = Issue(
-        id: 'foo',
-        author:
-            Author(login: 'Arnaud', avatarUrl: 'https://placholder.com/250'),
-        title: 'title',
-        state: 'open',
-        bodyText: 'hello world',
-        createdAt: '2015-11-07T07:43:04Z',
-        updatedAt: '2015-11-07T07:43:04Z',
-        comments: EdgeParent(totalCount: 2, edges: [
-          Edge(
-              cursor: '',
-              node: Node(
-                  id: '',
-                  createdAt: '2015-11-07T07:43:04Z',
-                  bodyText: 'hi',
-                  author: Author(
-                      login: 'joe', avatarUrl: 'https://placeholder.com/250'))),
-          Edge(
-              cursor: '',
-              node: Node(
-                  id: '',
-                  createdAt: '2015-11-07T07:43:04Z',
-                  bodyText: 'hi 2',
-                  author: Author(
-                      login: 'joe', avatarUrl: 'https://placeholder.com/250')))
-        ]),
-        labels: EdgeParent(totalCount: 0, edges: []));
-    final pumpWidgetTest = BlocProvider(
-      create: (_) => DetailsBloc(mockGitRepo, mockHiveRepo)
-        ..add(const DetailsEvent.watchIssueDetailsAsked(1)),
-      child: Builder(
-        builder: (context) => const Scaffold(body: DetailsView()),
-      ),
-    );
-
-    final streamController = StreamController<Issue>();
     when(() => mockGitRepo.repoStream)
         .thenAnswer((_) => streamController.stream);
     when(() => mockGitRepo.getIssueDetails(any()))
