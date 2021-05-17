@@ -13,5 +13,12 @@ void main() {
     await tester.pumpWidget(const App());
     await tester.pumpAndSettle();
     expect(find.byType(IssuesPage), findsOneWidget);
+
+    // This page should contains the search form and the sort button
+    // and an infinite scroll with the issues cards
+    expect(find.byKey(searchFormKey), findsOneWidget);
+    expect(find.byKey(sortButtonKey), findsOneWidget);
+    expect(find.byKey(infinitScrollKey), findsOneWidget);
+    expect(find.byType(IssueCard), findsWidgets);
   });
 }

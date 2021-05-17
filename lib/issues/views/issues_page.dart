@@ -8,6 +8,10 @@ import 'package:flutterissuesapp/l10n/l10n.dart';
 import 'package:flutterissuesapp/theme/cubit/theme_cubit.dart';
 import 'package:flutterissuesapp/utils/utils.dart';
 
+const searchFormKey = Key('Search form');
+const sortButtonKey = Key('sort button');
+const infinitScrollKey = Key('infinit scroll');
+
 class IssuesPage extends StatelessWidget {
   const IssuesPage({Key? key}) : super(key: key);
   @override
@@ -74,6 +78,7 @@ class IssuesView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: TextFormField(
+                          key: searchFormKey,
                           decoration: InputDecoration(
                             labelText: l10n.filterInputLabel,
                             hintText: l10n.filterInputHint,
@@ -92,6 +97,7 @@ class IssuesView extends StatelessWidget {
                         ),
                       ),
                       IconButton(
+                          key: sortButtonKey,
                           icon: Icon(context.select(
                                   (IssuesBloc bloc) => bloc.state.isDesc)
                               ? Icons.arrow_circle_down
@@ -111,6 +117,7 @@ class IssuesView extends StatelessWidget {
                   ),
                 ] else
                   Expanded(
+                    key: infinitScrollKey,
                     child: InfiniteScrollWidget(
                       issues: state.issues!,
                     ),
