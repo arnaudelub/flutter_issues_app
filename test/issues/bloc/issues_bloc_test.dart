@@ -51,7 +51,7 @@ void main() {
     );
     blocTest<IssuesBloc, IssuesState>(
       'should emit state isLoading to true, then to false'
-      'with Issues when setFilter is asked with non null Filter()',
+      ' with Issues when setFilter is asked with non null Filter()',
       build: () => IssuesBloc(_mockGithubRepository),
       act: (bloc) {
         when(() => _mockGithubRepository.setFilter(Filter.empty()))
@@ -63,11 +63,6 @@ void main() {
       expect: () => [
         const IssuesState(isLoading: false, moreIsLoading: false, isDesc: true),
         const IssuesState(isLoading: true, moreIsLoading: false, isDesc: true),
-        IssuesState(
-            isLoading: false,
-            moreIsLoading: false,
-            issues: issuesTest,
-            isDesc: true)
       ],
     );
     blocTest<IssuesBloc, IssuesState>(

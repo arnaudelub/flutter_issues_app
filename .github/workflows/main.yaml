@@ -22,6 +22,8 @@ jobs:
             GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
         run: echo "$GOOGLE_SERVICES" | base64 --decode > android/app/google-services.json
 
+      - name: Switch to flutter channel
+        run: flutter channel beta
 
       #Inside package Helper_repository
       - name: Install dependencies Helper Repository
