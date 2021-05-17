@@ -61,7 +61,6 @@ void main() {
   );
 
   final streamController = StreamController<Issue>();
-  setUpAll(() {});
   testWidgets('Launch the app correctly', (WidgetTester tester) async {
     await initiateApp();
     await tester.pumpWidget(const App());

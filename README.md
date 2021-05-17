@@ -52,6 +52,9 @@ gradle app:assembleAndroidTest
 gradle app:assembleDebug -Ptarget=integration_test/app_test.dart
 popd
 ```
+
+__Use ./gradlew on iOS instead of gradle__
+
 For the sake of simplicity i am leaving here VGV readme
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
