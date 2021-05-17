@@ -22,6 +22,8 @@ void main() {
     expect(find.byKey(sortButtonKey), findsOneWidget);
     expect(find.byKey(infinitScrollKey), findsOneWidget);
     expect(find.byType(IssueCard), findsWidgets);
+    // Take a screenshot not available with SDK
+    // await binding.takeScreenshot('issues_page');
   });
 
   testWidgets('Should navigate to details page when an issue card is tapped',

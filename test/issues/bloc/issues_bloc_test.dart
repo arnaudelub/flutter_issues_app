@@ -29,17 +29,26 @@ void main() {
       when(_mockGithubRepository.close).thenAnswer((_) => Future.value(null));
     }
 
+    void mockWatchPaginatedIssues(IssuesBloc bloc) {
+      when(_mockGithubRepository.watchPaginatedIssues)
+          .thenAnswer((_) async => issuesTest);
+      when(() => _mockGithubRepository.isSortedDesc).thenReturn(true);
+      mockCloseRepository();
+      bloc.add(const IssuesEvent.fetchIssuesAsked());
+    }
+
+    void mockSetFilter(IssuesBloc bloc, Filter filter) {
+      when(() => _mockGithubRepository.setFilter(filter))
+          .thenAnswer((invocation) => Future.value(null));
+      when(() => _mockGithubRepository.isSortedDesc).thenReturn(true);
+      mockCloseRepository();
+    }
+
     blocTest<IssuesBloc, IssuesState>(
       'should emit state isLoading to true, then to false'
       ' with Issues when fetchIssues asked',
       build: () => IssuesBloc(_mockGithubRepository),
-      act: (bloc) {
-        when(_mockGithubRepository.watchPaginatedIssues)
-            .thenAnswer((_) async => issuesTest);
-        when(() => _mockGithubRepository.isSortedDesc).thenReturn(true);
-        mockCloseRepository();
-        bloc.add(const IssuesEvent.fetchIssuesAsked());
-      },
+      act: mockWatchPaginatedIssues,
       expect: () => [
         const IssuesState(isLoading: true, moreIsLoading: false, isDesc: true),
         IssuesState(
@@ -54,15 +63,24 @@ void main() {
       ' with Issues when setFilter is asked with non null Filter()',
       build: () => IssuesBloc(_mockGithubRepository),
       act: (bloc) {
-        when(() => _mockGithubRepository.setFilter(Filter.empty()))
-            .thenAnswer((invocation) => Future.value(null));
-        when(() => _mockGithubRepository.isSortedDesc).thenReturn(true);
-        mockCloseRepository();
+        mockWatchPaginatedIssues(bloc);
+        mockSetFilter(bloc, Filter.empty());
         bloc.add(const IssuesEvent.setFiltersAsked(Filter(states: 'open')));
       },
       expect: () => [
+        const IssuesState(isLoading: true, moreIsLoading: false, isDesc: true),
+        IssuesState(
+            isLoading: false,
+            moreIsLoading: false,
+            issues: issuesTest,
+            isDesc: true),
         const IssuesState(isLoading: false, moreIsLoading: false, isDesc: true),
         const IssuesState(isLoading: true, moreIsLoading: false, isDesc: true),
+        IssuesState(
+            isLoading: false,
+            moreIsLoading: false,
+            issues: issuesTest,
+            isDesc: true)
       ],
     );
     blocTest<IssuesBloc, IssuesState>(
@@ -70,9 +88,7 @@ void main() {
       ' when setFilter is asked with null Filter()',
       build: () => IssuesBloc(_mockGithubRepository),
       act: (bloc) {
-        when(() => _mockGithubRepository.setFilter(Filter.empty()))
-            .thenAnswer((invocation) => Future.value(null));
-        when(() => _mockGithubRepository.isSortedDesc).thenReturn(true);
+        mockSetFilter(bloc, Filter.empty());
         mockCloseRepository();
         bloc.add(const IssuesEvent.setFiltersAsked(Filter()));
       },

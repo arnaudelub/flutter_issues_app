@@ -7,6 +7,10 @@ import 'package:flutterissuesapp/l10n/l10n.dart';
 import 'package:flutterissuesapp/utils/constants.dart';
 import 'package:github_api_repository/github_api_repository.dart';
 
+const headerKey = Key('issue header');
+const postBoxKey = Key('post box');
+const commentBoxKey = Key('comment box');
+
 class DetailsPage extends StatelessWidget {
   const DetailsPage({Key? key, required this.issueNumber}) : super(key: key);
 
@@ -57,10 +61,12 @@ class DetailsView extends StatelessWidget {
             child: Column(
           children: [
             IssueHeader(
+              key: headerKey,
               issue: issue,
             ),
             const SizedBox(height: kSpacer),
             CommentWidget(
+                key: postBoxKey,
                 body: issue.bodyText!,
                 createdAt: issue.createdAt,
                 name: author.login,
@@ -71,6 +77,7 @@ class DetailsView extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.only(bottom: kSpacer),
                 child: CommentWidget(
+                    key: commentBoxKey,
                     body: comment.bodyText!,
                     createdAt: comment.createdAt,
                     name: author.login,
