@@ -114,5 +114,5 @@ jobs:
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           token: ${{secrets.FIREBASE_TOKEN}}
-          groups: mediamarkts
+          groups: mediamarkt
           file: build/app/outputs/flutter-apk/app-production-release.apk
