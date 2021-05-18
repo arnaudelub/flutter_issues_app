@@ -12,7 +12,14 @@ class IssueCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final node = issue.node;
     final createdAt = formatDate(node.createdAt);
-    final author = node.author;
+
+    /// If filtering with author:__@me__
+    /// the query return ```__author: null__```
+    /// and because the token used to query the API
+    /// __@me__ is actually me!
+    /// Using __@me__ also return all issues where Author is __null__
+    final author =
+        node.author ?? const Author(login: 'arnaudelub', avatarUrl: null);
     final theme = Theme.of(context);
     return Card(
       child: ListTile(
@@ -20,7 +27,7 @@ class IssueCard extends StatelessWidget {
         title: Text.rich(TextSpan(text: node.title!, children: [
           TextSpan(text: ' #${node.number}', style: theme.textTheme.caption!)
         ])),
-        subtitle: Text('Opened by: ${author!.login} on $createdAt'),
+        subtitle: Text('Opened by: ${author.login} on $createdAt'),
         leading: OpenCloseTag(isClosed: issue.node.state == 'CLOSED'),
         trailing: node.isCached ?? false
             ? const SizedBox()

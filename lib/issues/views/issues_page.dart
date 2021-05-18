@@ -8,6 +8,10 @@ import 'package:flutterissuesapp/l10n/l10n.dart';
 import 'package:flutterissuesapp/theme/cubit/theme_cubit.dart';
 import 'package:flutterissuesapp/utils/utils.dart';
 
+const searchFormKey = Key('Search form');
+const sortButtonKey = Key('sort button');
+const infinitScrollKey = Key('infinit scroll');
+
 class IssuesPage extends StatelessWidget {
   const IssuesPage({Key? key}) : super(key: key);
   @override
@@ -63,39 +67,63 @@ class IssuesView extends StatelessWidget {
                 currentFocus.unfocus();
               }
             },
-            child: Column(children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: kDefaultPadding,
-                    right: kDefaultPadding,
-                    top: kDefaultPadding),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: l10n.filterInputLabel,
-                    hintText: l10n.filterInputHint,
-                    prefixIcon: const Icon(Icons.search),
-                    enabledBorder: const OutlineInputBorder(),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: kDefaultPadding,
+                      right: kDefaultPadding,
+                      top: kDefaultPadding),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          key: searchFormKey,
+                          decoration: InputDecoration(
+                            labelText: l10n.filterInputLabel,
+                            hintText: l10n.filterInputHint,
+                            prefixIcon: const Icon(Icons.search),
+                            enabledBorder: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) => context
+                              .read<FilterFormBloc>()
+                              .add(FilterFormEvent.onFilterChanged(value)),
+                          onSaved: (_) => context
+                              .read<FilterFormBloc>()
+                              .add(const FilterFormEvent.enterPressed()),
+                          onFieldSubmitted: (_) => context
+                              .read<FilterFormBloc>()
+                              .add(const FilterFormEvent.enterPressed()),
+                        ),
+                      ),
+                      IconButton(
+                          key: sortButtonKey,
+                          icon: Icon(context.select(
+                                  (IssuesBloc bloc) => bloc.state.isDesc)
+                              ? Icons.arrow_circle_down
+                              : Icons.arrow_circle_up),
+                          onPressed: () => context
+                              .read<IssuesBloc>()
+                              .add(const IssuesEvent.toggleOrderAsked())),
+                    ],
                   ),
-                  onChanged: (value) => context
-                      .read<FilterFormBloc>()
-                      .add(FilterFormEvent.onFilterChanged(value)),
-                  onSaved: (_) => context
-                      .read<FilterFormBloc>()
-                      .add(const FilterFormEvent.enterPressed()),
-                  onFieldSubmitted: (_) => context
-                      .read<FilterFormBloc>()
-                      .add(const FilterFormEvent.enterPressed()),
                 ),
-              ),
-              if (state.moreIsLoading) ...[
-                const LinearProgressIndicator(),
+                if (state.moreIsLoading) ...[
+                  const LinearProgressIndicator(),
+                ],
+                if (issues.edges.isEmpty) ...[
+                  Expanded(
+                    child: Center(child: Text(l10n.resultEmpty)),
+                  ),
+                ] else
+                  Expanded(
+                    key: infinitScrollKey,
+                    child: InfiniteScrollWidget(
+                      issues: state.issues!,
+                    ),
+                  ),
               ],
-              Expanded(
-                child: InfiniteScrollWidget(
-                  issues: state.issues!,
-                ),
-              ),
-            ]),
+            ),
           );
         });
   }

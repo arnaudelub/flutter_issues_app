@@ -19,11 +19,14 @@ class FilterFormBloc extends Bloc<FilterFormEvent, FilterFormState> {
     yield* event.map(onFilterChanged: (OnFilterChanged value) async* {
       yield state.copyWith(filterString: value.filterString, onSave: none());
     }, enterPressed: (EnterPressed value) async* {
+      Filter? filter;
       if (state.filterString != '' && state.filterString != null) {
-        final filter = _filterRepository.getFiltersFromString(
+        filter = _filterRepository.getFiltersFromString(
           state.filterString!,
         );
         yield state.copyWith(onSave: optionOf(filter));
+      } else {
+        yield state;
       }
     });
   }

@@ -12,9 +12,13 @@
     "@filterInputLabel": {
         "description": "Text shown in filter input as label"
     },
-    "filterInputHint": "states:open || states:closed",
+    "filterInputHint": "states:open || states:closed || author:[author]",
     "@filterInputHint": {
         "description": "Text shown in filter input as hint"
+    },
+    "resultEmpty": "No result found!",
+    "@resultEmpty": {
+        "description": "Text shown when query returns empty result"
     }
 
 

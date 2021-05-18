@@ -13,22 +13,19 @@ class FilterDto with _$FilterDto {
   }) = _FilterDto;
 
   factory FilterDto.fromString(String filter) {
-    final splittedString = filter.split(' ');
-    String? states;
-    String? author;
-    for (final string in splittedString) {
-      if (string.contains(':')) {
-        final keyValue = string.split(':');
-        final key = keyValue[0];
-        final value = keyValue[1];
-        if (key == 'states') {
-          states = value;
-        } else if (key == 'author') {
-          author = value;
-        }
+    final filterList = filter.split(' ');
+    String? authorFilter;
+    String? stateFilter;
+    for (final filter in filterList) {
+      final value = filter.split(':').last;
+      if (filter.contains(authorQualifier)) {
+        authorFilter = value;
+      }
+      if (filter.contains(statesQualifier)) {
+        stateFilter = value;
       }
     }
-    return FilterDto(author: author, states: states);
+    return FilterDto(states: stateFilter, author: authorFilter);
   }
 
   Filter toDomain() => Filter(states: states, author: author);

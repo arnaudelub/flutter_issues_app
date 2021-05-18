@@ -1,0 +1,10 @@
+android-pixel-4:
+  type: instrumentation
+  app: build/app/outputs/flutter-apk/app-production-release.apk
+  # TODO: Set the name of test apk file
+  test: build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+  device:
+    - model: flame
+      version: 29
+      locale: 'en'
+      orientation: portrait

@@ -44,7 +44,7 @@ class _InfiniteScrollWidgetState extends State<InfiniteScrollWidget> {
           itemCount: widget.issues.edges.length,
           itemBuilder: (context, index) {
             final issue = widget.issues.edges[index];
-            return IssueCard(issue: issue!);
+            return IssueCard(key: Key('issue card $index'), issue: issue!);
           }),
     );
   }

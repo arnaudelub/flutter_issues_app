@@ -1,5 +1,64 @@
 # Flutterissuesapp
 
+## WARNINGS!!!
+
+This project is using the integration_test SDK so it Flutter has to be on the beta channel for now, see * [integration section](#integration) for more info
+otherwise, you can use:
+```yaml
+override_dependencies:
+    crypto: ^3.0.0
+    convert: ^3.0.0
+    args: ^2.0.0
+```
+## GITHUB OUTAGE 16/05
+Since the begining of the day there is a major outage on github:[Source](https://www.githubstatus.com/incidents/zbpwygxwb3gw)
+So my github workflow can't be tested at the moment!
+
+### [EDIT 20H00]
+- Github action seems to be up
+
+## Implementation
+
+- Actually the issues page is an infinite scroll list which can be filtered with **states:open** and **states:closed** at the moment.
+- For the details page, each comment is wrapped inside ``__Markdown()__``, which is blocking the Listscroll
+- Theming: there is a switch on the AppBar to switch between dark and light theme
+- Github Action: It will check on formating, analyzing and test on push for branches main et dev. For the branch main, it will also publish the release build to Firebase App Publication and adding the appbundle to TestLab when pushed on dev branch
+
+## Folder structures
+
+- Bloc and UI can be found directly in the lib folder
+- The repositories are stored inside separated packages so it can be more maintainable and reusable (github repo or packages on pub.dev). Entities are in the domain folder and the data layer is inside infrastructure folder.
+- In all the project, each folder contains a barrel file that export every file of the parent folder(s) (if any) and current folder
+
+
+
+## How to build and test
+
+### Generate the code
+
+1. __flutter pub run build_runner build --delete-conflicting-outputs__
+2. Repeat the same command inside each package in packages/
+
+### <a name="integration"></a>Run the integration test
+
+- flutter drive --flavor development --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d <DEVICE_ID>
+
+- To generate the APK files for TestLab, see more info in * [integration_test usage page](https://github.com/flutter/flutter/tree/master/packages/integration_test#usage)
+```bash
+pushd android
+# flutter build generates files in android/ for building the app
+flutter build apk --flavor production -t lib/main_production.dart
+gradle app:assembleAndroidTest
+gradle app:assembleDebug -Ptarget=integration_test/app_test.dart
+popd
+```
+
+__Use ./gradlew on iOS instead of gradle__
+
+For the sake of simplicity i am leaving here VGV readme
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 [![Very Good Ventures][logo]][very_good_ventures_link]
 
 Developed with 💙 by [Very Good Ventures][very_good_ventures_link] 🦄

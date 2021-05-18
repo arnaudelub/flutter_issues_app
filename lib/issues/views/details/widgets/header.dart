@@ -13,6 +13,15 @@ class IssueHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final date = formatDate(issue.createdAt);
+
+    /// If filtering with author:[@me]
+    /// the query return ```__author: null__```
+    /// and because the token used to query the API
+    /// [@me] is actually me!
+    /// Using [@me] also return all issues where Author is [null]
+    final author =
+        issue.author ?? const Author(login: 'arnaudelub', avatarUrl: null);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -35,7 +44,7 @@ class IssueHeader extends StatelessWidget {
               OpenCloseTag(isClosed: issue.state == close),
               const SizedBox(width: kSmallSpacer),
               Text.rich(
-                TextSpan(text: issue.author!.login, children: [
+                TextSpan(text: author.login, children: [
                   TextSpan(
                       text: ' opened this issue on $date',
                       style: theme.textTheme.caption!

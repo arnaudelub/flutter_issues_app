@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:github_api_repository/github_api_repository.dart';
 import 'package:github_api_repository/src/domain/domain.dart';
 import 'package:github_api_repository/src/domain/i_github_api_repository.dart';
 import 'package:github_api_repository/src/domain/issues/issues.dart';
@@ -52,11 +53,11 @@ void main() {
     const filterOpen = 'open';
     const filterClose = 'closed';
     test('_issueStateFilter should be OPEN when filter is open', () {
-      _repository.setStateFilterFromString(filterOpen);
+      _repository.setFilter(const Filter(states: filterOpen));
       expect(_repository.issueStateFilter, openState);
     });
     test('_issueStateFilter should be CLOSED when filter is closed', () {
-      _repository.setStateFilterFromString(filterClose);
+      _repository.setFilter(const Filter(states: filterClose));
       expect(_repository.issueStateFilter, closeState);
     });
   });

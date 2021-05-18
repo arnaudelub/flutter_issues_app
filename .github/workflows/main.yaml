@@ -1,8 +1,8 @@
 name: flutterissuesapp
 
 on:
-   push :
-        branches: [master]
+   pull_request:
+        branches: [main]
 
 jobs:
   build:
@@ -20,19 +20,13 @@ jobs:
       - name: Create google-services.json file for android
         env:
             GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
-        run: echo "$GOOGLE_SERVICES" | base64 --decode > android/app/src/google-services.json
+        run: echo "$GOOGLE_SERVICES" | base64 --decode > android/app/google-services.json
 
-      - name: Adding keystore and envs
-        env:
-            KEYSTOREFILE: ${{ secrets.KEYSTORE }}
-            PRIVATE_KEY_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD }}
-            KEYSTORE_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PASSWORD }}
-            ALIAS: ${{ FLUTTERISSUESAPP_ANDROID_KEYSTORE_ALIAS }}
-        run: |
-            mkdir ~/keystores
-            echo "KEYSTOREFILE" | base64 --decode > ~/keystores/flutterissuesapp-key.keystore
+      - name: Switch to flutter channel
+        run: flutter channel beta
+
       #Inside package Helper_repository
-      - name: Install dependencies
+      - name: Install dependencies Helper Repository
         working-directory: ./packages/helper_repository
         run: flutter packages get
       - name: format
@@ -46,7 +40,7 @@ jobs:
         run: flutter test --no-pub --coverage --test-randomize-ordering-seed random
 
       # Inside package Hive repository
-      - name: Install dependencies
+      - name: Install dependencies Hive repository
         working-directory: ./packages/hive_repository
         run: flutter packages get
       - name: format
@@ -63,8 +57,29 @@ jobs:
         working-directory: ./packages/hive_repository
         run: flutter test --no-pub --coverage --test-randomize-ordering-seed random
 
-      - name: Install Dependencies
+      # Inside package Github repository
+      - name: Install dependencies Github repository
+        working-directory: ./packages/github_api_repository
         run: flutter packages get
+      - name: format
+        working-directory: ./packages/hive_repository
+        run: flutter format --set-exit-if-changed lib test
+      - name: Run build_runner
+        working-directory: ./packages/github_api_repository
+        run: |
+            flutter pub run build_runner build --delete-conflicting-outputs
+      - name: Analyze
+        working-directory: ./packages/github_api_repository
+        run: flutter analyze lib test
+      - name: Run tests
+        working-directory: ./packages/github_api_repository
+        run: flutter test --no-pub --coverage --test-randomize-ordering-seed random
+
+      - name: Install Dependencies root
+        run: flutter packages get
+      - name: Run build_runner
+        run: |
+            flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Format
         run: flutter format --set-exit-if-changed lib test
@@ -80,14 +95,24 @@ jobs:
         with:
           exclude: "lib/**.freezed.dart lib/**.g.dart"
           path: "./coverage/lcov.info"
-          min_coverage: 50
-      - name: Build the app
-        run: flutter build apk  --flavor production -t lib/main_production.dart
+          min_coverage: 10
+
+
+      - name: Adding keystore and envs then build appbundle
+        env:
+            KEYSTOREFILE: ${{ secrets.KEYSTORE }}
+            FLUTTERISSUESAPP_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD : ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD }}
+            FLUTTERISSUESAPP_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_PASSWORD }}
+            FLUTTERISSUESAPP_ANDROID_KEYSTORE_ALIAS: ${{ secrets.FLUTTERISSUESAPP_ANDROID_KEYSTORE_ALIAS }}
+        run: |
+            mkdir ~/keystores
+            echo "$KEYSTOREFILE" | base64 --decode > ~/keystores/flutterissuesapp-key.keystore
+            flutter build apk --flavor production -t lib/main_production.dart -v
 
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           token: ${{secrets.FIREBASE_TOKEN}}
-          groups: mediamarkts
+          groups: mediamarkt
           file: build/app/outputs/flutter-apk/app-production-release.apk

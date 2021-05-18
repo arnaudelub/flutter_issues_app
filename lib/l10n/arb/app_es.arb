@@ -12,9 +12,12 @@
     "@filterInputLabel": {
         "description": "Text mostrado como label del input de filtros"
     },
-    "filterInputHint": "states:open || states:closed",
+    "filterInputHint": "states:open || states:closed || author:[author]",
     "@filterInputHint": {
         "description": "Text mostrado como ayuda del input de filtros"
+    },
+    "resultEmpty": "No se ha encontrado ninguna issue!",
+    "@resultEmpty": {
+        "description": "Text mostrado cuando el resultado esta vacio"
     }
-
 }

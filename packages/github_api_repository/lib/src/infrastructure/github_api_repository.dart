@@ -16,6 +16,10 @@ const closeState = 'CLOSED';
 
 const openState = 'OPEN';
 
+const sortDesc = 'DESC';
+
+const sortASC = 'ASC';
+
 class GithubApiRepository implements IGithubApiRepository {
   GithubApiRepository(this.client, this._hiveRepository);
 
@@ -24,6 +28,12 @@ class GithubApiRepository implements IGithubApiRepository {
   final IHiveRepository _hiveRepository;
 
   final BehaviorSubject<Issue> _repoSubject = BehaviorSubject<Issue>();
+
+  String? author;
+
+  @override
+  bool? isSortedDesc = true;
+
   @override
   String? issueStateFilter = openState;
 
@@ -53,7 +63,7 @@ class GithubApiRepository implements IGithubApiRepository {
   Future<void> getIssueDetails(int issueNumber) async {
     final _option = WatchQueryOptions(
       fetchPolicy: FetchPolicy.cacheAndNetwork,
-      document: gql(_getIssuesDetailsQuery()),
+      document: gql(_getIssueDetailsQuery()),
       variables: <String, dynamic>{
         'nNumber': issueNumber,
       },
@@ -63,7 +73,6 @@ class GithubApiRepository implements IGithubApiRepository {
     final result = await client.query(_option);
     if (result.hasException) {
       debugPrint(result.toString());
-      //_repoSubject.addError(result.exception!);
       throw QueryError();
     }
     // result.data can be either a [List<dynamic>] or a [Map<String, dynamic>]
@@ -84,15 +93,15 @@ class GithubApiRepository implements IGithubApiRepository {
   void setIsOpenStateFilter() => issueStateFilter = openState;
 
   @override
-  void setStateFilterFromString(String filter) {
-    if (!availableFilterState.contains(filter)) {
-      throw Exception('Invalid filter');
+  void setFilter(Filter filter) {
+    if (filter.states != null) {
+      if (filter.states == availableFilterState[0]) {
+        setIsOpenStateFilter();
+      } else {
+        setIsClosedStateFilter();
+      }
     }
-    if (filter == availableFilterState[0]) {
-      setIsOpenStateFilter();
-    } else {
-      setIsClosedStateFilter();
-    }
+    author = filter.author;
   }
 
   @override
@@ -117,7 +126,8 @@ class GithubApiRepository implements IGithubApiRepository {
     return issues;
   }
 
-  String _getIssuesDetailsQuery() {
+  /// * [GraphQL github explorer](https://docs.github.com/en/graphql/overview/explorer)
+  String _getIssueDetailsQuery() {
     return '''
 query issueDetails(\$nNumber: Int!){
   repository(name: "flutter", owner: "flutter") {
@@ -131,7 +141,7 @@ query issueDetails(\$nNumber: Int!){
       author {
         login
       }
-      labels(last: 50, orderBy: {field: CREATED_AT, direction: DESC}) {
+      labels(first: 50, orderBy: {field: CREATED_AT, direction:DESC }) {
         totalCount
         edges {
           cursor
@@ -168,6 +178,7 @@ query issueDetails(\$nNumber: Int!){
         ''';
   }
 
+  /// * [GraphQL github explorer](https://docs.github.com/en/graphql/overview/explorer)
   String _getPaginatedIssue(String? after) {
     var query = '''
 query readIssues(\$nIssues: Int!, \$states: [IssueState!]) {
@@ -180,10 +191,13 @@ query readIssues(\$nIssues: Int!, \$states: [IssueState!]) {
     if (after != null) {
       query += 'after:"$after"';
     }
+    if (author != null) {
+      query += 'filterBy: {createdBy: "$author"}';
+    }
     query += '''
         orderBy: {
           field: CREATED_AT
-          direction: DESC
+          direction: ${isSortedDesc! ? 'DESC' : 'ASC'}
         }) {
       totalCount
       edges {

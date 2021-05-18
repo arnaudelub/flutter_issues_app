@@ -8,11 +8,11 @@ import 'package:injectable/injectable.dart';
 @module
 abstract class GithubApiInjectableModule {
   @lazySingleton
-  IGithubApiRepository get githubApiRepository =>
-      GithubApiRepository(client, getIt<IHiveRepository>());
+  IFilterRepository get filterRepository => FilterRepository();
 
   @lazySingleton
-  IFilterRepository get filterRepository => FilterRepository();
+  IGithubApiRepository get githubApiRepository =>
+      GithubApiRepository(client, getIt<IHiveRepository>());
 
   @lazySingleton
   HttpLink get httpLink => HttpLink(
