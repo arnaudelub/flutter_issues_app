@@ -95,14 +95,8 @@ jobs:
         with:
           exclude: "lib/**.freezed.dart lib/**.g.dart"
           path: "./coverage/lcov.info"
-          min_coverage: 20
+          min_coverage: 10
 
-      - name: Check Code Coverage
-        uses: VeryGoodOpenSource/very_good_coverage@v1.1.1
-        with:
-          exclude: "lib/**.freezed.dart lib/**.g.dart"
-          path: "./coverage/lcov.info"
-          min_coverage: 20
 
       - name: Adding keystore and envs then build appbundle
         env:
